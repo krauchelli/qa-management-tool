@@ -1,0 +1,54 @@
+╔══════════════════════════════════════════════════════════════╗
+║          FILES TO COPY MANUALLY (NOT IN GIT)                 ║
+╚══════════════════════════════════════════════════════════════╝
+
+🔴 CRITICAL - MUST COPY:
+
+1. DATABASE FILE
+   Location: backend/prisma/dev.db
+   Size: ~500KB
+   Contains: All your test data (21 tests)
+   
+   Backup command:
+   cp backend/prisma/dev.db ~/backup/qa-db-$(date +%Y%m%d).db
+
+2. ENVIRONMENT FILE
+   Location: backend/.env
+   Size: <1KB
+   Contains: Database URL, port, environment
+   
+   On new machine:
+   cp backend/.env.example backend/.env
+
+═══════════════════════════════════════════════════════════════
+
+✅ ALREADY IN GIT (No need to copy):
+
+- All source code (frontend/src/, backend/src/)
+- All configuration files (package.json, tsconfig.json, etc.)
+- Prisma schema (backend/prisma/schema.prisma)
+- Documentation (.md files)
+- .gitignore
+
+═══════════════════════════════════════════════════════════════
+
+❌ DON'T COPY (Will be generated):
+
+- node_modules/ (run: npm install)
+- dist/ (run: npm run build)
+- .DS_Store, .vscode/ (editor files)
+
+═══════════════════════════════════════════════════════════════
+
+📋 SETUP ON NEW MACHINE:
+
+1. git clone <your-repo>
+2. cd qa-management-tool
+3. npm install
+4. cp backend/.env.example backend/.env
+5. Copy dev.db to backend/prisma/ OR run: cd backend && npm run import
+6. npm run dev
+
+═══════════════════════════════════════════════════════════════
+
+See DEPLOYMENT-GUIDE.md for detailed instructions.
