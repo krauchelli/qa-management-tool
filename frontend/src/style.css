@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Configure Tailwind v4 */
+@theme {
+  /* You can customize your theme here if needed */
+}
+
+/* Base styles */
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}

@@ -1,0 +1,235 @@
+<template>
+  <div>
+    <!-- Header -->
+    <div class="mb-6">
+      <button
+        @click="router.back()"
+        class="text-blue-600 hover:text-blue-800 mb-4 flex items-center gap-2"
+      >
+        ← Back
+      </button>
+      <h2 class="text-3xl font-bold text-gray-900">
+        {{ isEdit ? 'Edit Test' : 'Add New Test' }}
+      </h2>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <form @submit.prevent="handleSubmit" class="space-y-6">
+        <!-- Test Date -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Test Date *
+          </label>
+          <input
+            v-model="form.date"
+            type="date"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <!-- Feature Name -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Feature Name *
+          </label>
+          <input
+            v-model="form.feature"
+            type="text"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            placeholder="Enter feature name"
+          />
+        </div>
+
+        <!-- JIRA Ticket -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            JIRA Ticket
+          </label>
+          <input
+            v-model="form.jira"
+            type="text"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            placeholder="e.g., PROJ-123"
+          />
+        </div>
+
+        <!-- JIRA URL -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            JIRA URL
+          </label>
+          <input
+            v-model="form.jiraUrl"
+            type="url"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            placeholder="https://jira.example.com/browse/PROJ-123"
+          />
+        </div>
+
+        <!-- Environment -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Environment *
+          </label>
+          <select
+            v-model="form.env"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            <option value="">Select environment</option>
+            <option value="DEV">Development</option>
+            <option value="STAGING">Staging</option>
+            <option value="PROD">Production</option>
+          </select>
+        </div>
+
+        <!-- Status -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Status *
+          </label>
+          <select
+            v-model="form.status"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            <option value="">Select status</option>
+            <option value="PASSED">Passed</option>
+            <option value="FAILED">Failed</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="NEED_CONFIRMATION">Need Confirmation</option>
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Notes
+          </label>
+          <textarea
+            v-model="form.notes"
+            rows="4"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            placeholder="Add any additional notes..."
+          ></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-4 pt-4">
+          <button
+            type="submit"
+            :disabled="loading"
+            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {{ loading ? 'Saving...' : (isEdit ? 'Update Test' : 'Create Test') }}
+          </button>
+          <button
+            type="button"
+            @click="router.back()"
+            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <!-- Error Message -->
+        <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-red-800">{{ error }}</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useTestStore } from '@/stores/testStore';
+import type { TestStatus, TestEnv } from '@/types';
+
+const route = useRoute();
+const router = useRouter();
+const testStore = useTestStore();
+
+const isEdit = computed(() => route.name === 'EditTest');
+const testId = computed(() => route.params.id as string);
+
+const loading = ref(false);
+const error = ref('');
+
+const form = ref({
+  date: '',
+  feature: '',
+  jira: '',
+  jiraUrl: '',
+  env: '' as TestEnv | '',
+  status: '' as TestStatus | '',
+  notes: ''
+});
+
+// Load test data if editing
+onMounted(async () => {
+  if (isEdit.value && testId.value) {
+    loading.value = true;
+    try {
+      await testStore.fetchTest(testId.value);
+      const test = testStore.currentTest;
+      if (test) {
+        form.value = {
+          date: test.date,
+          feature: test.feature,
+          jira: test.jira || '',
+          jiraUrl: test.jiraUrl || '',
+          env: test.env,
+          status: test.status,
+          notes: test.notes || ''
+        };
+      }
+    } catch (err) {
+      error.value = 'Failed to load test data';
+    } finally {
+      loading.value = false;
+    }
+  } else {
+    // Set default date to today
+    form.value.date = new Date().toISOString().split('T')[0];
+  }
+});
+
+const handleSubmit = async () => {
+  loading.value = true;
+  error.value = '';
+
+  try {
+    if (isEdit.value && testId.value) {
+      await testStore.updateTest(testId.value, {
+        date: form.value.date,
+        feature: form.value.feature,
+        jira: form.value.jira || undefined,
+        jiraUrl: form.value.jiraUrl || undefined,
+        env: form.value.env as TestEnv,
+        status: form.value.status as TestStatus,
+        notes: form.value.notes || undefined
+      });
+    } else {
+      await testStore.createTest({
+        date: form.value.date,
+        feature: form.value.feature,
+        jira: form.value.jira || undefined,
+        jiraUrl: form.value.jiraUrl || undefined,
+        env: form.value.env as TestEnv,
+        status: form.value.status as TestStatus,
+        notes: form.value.notes || undefined
+      });
+    }
+    router.push('/tests');
+  } catch (err: any) {
+    error.value = err.message || 'Failed to save test';
+  } finally {
+    loading.value = false;
+  }
+};
+</script>
