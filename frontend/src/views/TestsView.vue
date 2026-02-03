@@ -114,6 +114,9 @@
                 Env
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tags
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -152,6 +155,16 @@
                 <span :class="getEnvClass(test.env)">
                   {{ test.env }}
                 </span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex flex-wrap gap-1">
+                  <TagBadge
+                    v-for="testTag in test.tags"
+                    :key="testTag.id"
+                    :tag="testTag.tag"
+                  />
+                  <span v-if="!test.tags || test.tags.length === 0" class="text-gray-400 text-sm">-</span>
+                </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button
@@ -196,6 +209,7 @@
 <script setup lang="ts">
 import { onMounted, computed, ref, watch } from 'vue';
 import { useTestStore } from '../stores/testStore';
+import TagBadge from '../components/TagBadge.vue';
 
 const testStore = useTestStore();
 

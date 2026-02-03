@@ -96,6 +96,16 @@
             <p class="text-sm text-gray-600">Notes</p>
             <p class="text-gray-900 mt-1">{{ test.notes }}</p>
           </div>
+          <div v-if="test.tags && test.tags.length > 0" class="md:col-span-2">
+            <p class="text-sm text-gray-600 mb-2">Tags</p>
+            <div class="flex flex-wrap gap-2">
+              <TagBadge
+                v-for="testTag in test.tags"
+                :key="testTag.id"
+                :tag="testTag.tag"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -254,6 +264,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTestStore } from '@/stores/testStore';
+import TagBadge from '@/components/TagBadge.vue';
 import type { Test, Detail } from '@/types';
 import { testService } from '@/services/testService';
 

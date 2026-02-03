@@ -117,6 +117,11 @@
           ></textarea>
         </div>
 
+        <!-- Tags -->
+        <div>
+          <TagSelector v-model="form.tagIds" />
+        </div>
+
         <!-- Actions -->
         <div class="flex gap-4 pt-4">
           <button
@@ -148,6 +153,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTestStore } from '@/stores/testStore';
+import TagSelector from '@/components/TagSelector.vue';
 import type { TestStatus, TestEnv } from '@/types';
 
 const route = useRoute();
@@ -167,7 +173,8 @@ const form = ref({
   jiraUrl: '',
   env: '' as TestEnv | '',
   status: '' as TestStatus | '',
-  notes: ''
+  notes: '',
+  tagIds: [] as string[]
 });
 
 // Load test data if editing
@@ -185,7 +192,8 @@ onMounted(async () => {
           jiraUrl: test.jiraUrl || '',
           env: test.env,
           status: test.status,
-          notes: test.notes || ''
+          notes: test.notes || '',
+          tagIds: test.tags?.map(tt => tt.tag.id) || []
         };
       }
     } catch (err) {
@@ -204,6 +212,8 @@ const handleSubmit = async () => {
   error.value = '';
 
   try {
+    let savedTestId: string;
+    
     if (isEdit.value && testId.value) {
       await testStore.updateTest(testId.value, {
         date: form.value.date,
@@ -214,8 +224,9 @@ const handleSubmit = async () => {
         status: form.value.status as TestStatus,
         notes: form.value.notes || undefined
       });
+      savedTestId = testId.value;
     } else {
-      await testStore.createTest({
+      const newTest = await testStore.createTest({
         date: form.value.date,
         feature: form.value.feature,
         jira: form.value.jira || undefined,
@@ -224,7 +235,14 @@ const handleSubmit = async () => {
         status: form.value.status as TestStatus,
         notes: form.value.notes || undefined
       });
+      savedTestId = newTest.id;
     }
+    
+    // Update tags
+    if (form.value.tagIds.length > 0) {
+      await testStore.updateTestTags(savedTestId, form.value.tagIds);
+    }
+    
     router.push('/tests');
   } catch (err: any) {
     error.value = err.message || 'Failed to save test';
