@@ -205,55 +205,94 @@
           </button>
         </div>
 
-        <!-- Details Form -->
-        <div v-if="editingDetails" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Title
-            </label>
-            <input
-              v-model="detailsForm.title"
-              type="text"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Short title for table notes column"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Content (Markdown)
-            </label>
-            <textarea
+        <!-- Details Editor with Navigation -->
+        <div v-if="editingDetails" class="flex gap-6">
+          <!-- Header Navigation Sidebar -->
+          <aside v-if="headers.length > 0" class="w-64 flex-shrink-0">
+            <div class="sticky top-4 bg-gray-50 rounded-lg p-4">
+              <h4 class="font-semibold text-gray-900 mb-3">Contents</h4>
+              <nav class="space-y-1">
+                <a
+                  v-for="header in headers"
+                  :key="header.id"
+                  :href="`#${header.id}`"
+                  :style="{ paddingLeft: `${(header.level - 1) * 12}px` }"
+                  class="block text-sm text-gray-700 hover:text-blue-600 hover:bg-gray-100 px-2 py-1 rounded"
+                >
+                  {{ header.text }}
+                </a>
+              </nav>
+            </div>
+          </aside>
+
+          <!-- Editor -->
+          <div class="flex-1">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Title (for table display)
+              </label>
+              <input
+                v-model="detailsForm.title"
+                type="text"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="Short title for table notes column"
+              />
+            </div>
+            
+            <MarkdownEditor
               v-model="detailsForm.content"
-              rows="12"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono text-sm"
-              placeholder="Enter full markdown content..."
-            ></textarea>
-          </div>
-          <div class="flex gap-2">
-            <button
-              @click="handleSaveDetails"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              Save Details
-            </button>
-            <button
-              @click="cancelEditDetails"
-              class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-            >
-              Cancel
-            </button>
+              height="600px"
+              placeholder="Enter test details in markdown..."
+              @change="extractHeaders"
+            />
+            
+            <div class="flex gap-2 mt-4">
+              <button
+                @click="handleSaveDetails"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Save Details
+              </button>
+              <button
+                @click="cancelEditDetails"
+                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- Details Display -->
-        <div v-else-if="details" class="space-y-4">
-          <div>
-            <h4 class="font-medium text-gray-900 mb-2">{{ details.title }}</h4>
-            <div class="prose max-w-none bg-gray-50 p-4 rounded-lg">
-              <pre class="whitespace-pre-wrap text-sm">{{ details.content }}</pre>
+        <div v-else-if="details" class="flex gap-6">
+          <!-- Header Navigation Sidebar -->
+          <aside v-if="displayHeaders.length > 0" class="w-64 flex-shrink-0">
+            <div class="sticky top-4 bg-gray-50 rounded-lg p-4">
+              <h4 class="font-semibold text-gray-900 mb-3">Contents</h4>
+              <nav class="space-y-1">
+                <a
+                  v-for="header in displayHeaders"
+                  :key="header.id"
+                  :href="`#${header.id}`"
+                  :style="{ paddingLeft: `${(header.level - 1) * 12}px` }"
+                  class="block text-sm text-gray-700 hover:text-blue-600 hover:bg-gray-100 px-2 py-1 rounded"
+                >
+                  {{ header.text }}
+                </a>
+              </nav>
             </div>
+          </aside>
+
+          <!-- Content Display with Toast UI Viewer -->
+          <div class="flex-1">
+            <h4 class="font-medium text-gray-900 mb-4">{{ details.title }}</h4>
+            <MarkdownViewer :content="details.content" />
+            <p class="text-xs text-gray-500 mt-2">
+              💡 Tip: You can copy the content with markdown formatting preserved
+            </p>
           </div>
         </div>
+        
         <p v-else class="text-gray-600 text-center py-4">No test details added yet</p>
       </div>
     </div>
@@ -261,12 +300,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTestStore } from '@/stores/testStore';
 import TagBadge from '@/components/TagBadge.vue';
+import MarkdownEditor from '@/components/MarkdownEditor.vue';
+import MarkdownViewer from '@/components/MarkdownViewer.vue';
 import type { Test, Detail } from '@/types';
 import { testService } from '@/services/testService';
+
+interface Header {
+  level: number;
+  text: string;
+  id: string;
+}
 
 const route = useRoute();
 const router = useRouter();
@@ -279,6 +326,7 @@ const test = ref<Test | null>(null);
 const details = ref<Detail | null>(null);
 const editingDetails = ref(false);
 const showAddEvidence = ref(false);
+const headers = ref<Header[]>([]);
 
 const newEvidence = ref({
   type: '',
@@ -289,6 +337,12 @@ const newEvidence = ref({
 const detailsForm = ref({
   title: '',
   content: ''
+});
+
+// Computed: Extract headers from displayed content
+const displayHeaders = computed(() => {
+  if (!details.value?.content) return [];
+  return extractHeadersFromMarkdown(details.value.content);
 });
 
 onMounted(async () => {
@@ -330,13 +384,37 @@ const loadDetails = async () => {
       title: response.title,
       content: response.content
     };
+    headers.value = extractHeadersFromMarkdown(response.content);
     editingDetails.value = true;
   } catch (err) {
-    // No details yet, start with empty form
+    // No details yet, start with empty form and template
+    const template = `# Test Details
+
+## Test Scenario
+Describe what you're testing...
+
+## Test Steps
+1. Step 1
+2. Step 2
+3. Step 3
+
+## Expected Results
+What should happen...
+
+## Actual Results
+What actually happened...
+
+## Evidence
+- Link to recording or screenshot
+
+## Root Cause
+Analysis of the issue (if failed)...
+`;
     detailsForm.value = {
       title: '',
-      content: ''
+      content: template
     };
+    headers.value = extractHeadersFromMarkdown(template);
     editingDetails.value = true;
   }
 };
@@ -415,4 +493,126 @@ const handleDelete = async () => {
 const formatStatus = (status: string) => {
   return status.replace('_', ' ');
 };
+
+// Extract headers from markdown
+const extractHeadersFromMarkdown = (markdown: string): Header[] => {
+  const headerRegex = /^(#{1,6})\s+(.+)$/gm;
+  const result: Header[] = [];
+  
+  let match;
+  while ((match = headerRegex.exec(markdown)) !== null) {
+    const level = match[1].length;
+    const text = match[2].trim();
+    const id = text.toLowerCase().replace(/[^\w]+/g, '-');
+    result.push({ level, text, id });
+  }
+  
+  return result;
+};
+
+// Extract headers when content changes
+const extractHeaders = (markdown: string) => {
+  headers.value = extractHeadersFromMarkdown(markdown);
+};
 </script>
+
+
+<style scoped>
+.prose {
+  color: #374151;
+}
+
+.prose h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+.prose h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 12px;
+}
+
+.prose h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 16px;
+  margin-bottom: 10px;
+}
+
+.prose p {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.prose ul, .prose ol {
+  margin-bottom: 12px;
+  padding-left: 24px;
+}
+
+.prose li {
+  margin-bottom: 4px;
+}
+
+.prose code {
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+}
+
+.prose pre {
+  background: #1f2937;
+  color: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.prose a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: #1d4ed8;
+}
+
+.prose blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 16px;
+  margin: 16px 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.prose th, .prose td {
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.prose th {
+  background: #f9fafb;
+  font-weight: 600;
+}
+</style>

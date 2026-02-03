@@ -122,6 +122,118 @@
           <TagSelector v-model="form.tagIds" />
         </div>
 
+        <!-- Test Details Section -->
+        <div class="border-t pt-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Test Details (Optional)</h3>
+          
+          <!-- Mode Selection -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Details Mode
+            </label>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                @click="form.detailsMode = 'none'"
+                :class="[
+                  'px-4 py-2 rounded-lg text-sm font-medium',
+                  form.detailsMode === 'none' ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ]"
+              >
+                No Details
+              </button>
+              <button
+                type="button"
+                @click="form.detailsMode = 'formatted'"
+                :class="[
+                  'px-4 py-2 rounded-lg text-sm font-medium',
+                  form.detailsMode === 'formatted' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ]"
+              >
+                📝 Formatted (Form Fields)
+              </button>
+              <button
+                type="button"
+                @click="form.detailsMode = 'free'"
+                :class="[
+                  'px-4 py-2 rounded-lg text-sm font-medium',
+                  form.detailsMode === 'free' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ]"
+              >
+                ✍️ Free Mode (Markdown Editor)
+              </button>
+            </div>
+          </div>
+
+          <!-- Formatted Mode -->
+          <div v-if="form.detailsMode === 'formatted'" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Test Scenario
+              </label>
+              <textarea
+                v-model="form.testScenario"
+                rows="2"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="Describe what you're testing..."
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Test Steps
+              </label>
+              <textarea
+                v-model="form.testSteps"
+                rows="4"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="1. Step 1&#10;2. Step 2&#10;3. Step 3"
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Expected Results
+              </label>
+              <textarea
+                v-model="form.expectedResults"
+                rows="2"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="What should happen..."
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Actual Results
+              </label>
+              <textarea
+                v-model="form.actualResults"
+                rows="2"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="What actually happened..."
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Root Cause (if failed)
+              </label>
+              <textarea
+                v-model="form.rootCause"
+                rows="2"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="Analysis of the issue..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Free Mode -->
+          <div v-if="form.detailsMode === 'free'">
+            <MarkdownEditor
+              v-model="form.detailsContent"
+              height="400px"
+              placeholder="Enter test details in markdown..."
+            />
+          </div>
+        </div>
+
         <!-- Actions -->
         <div class="flex gap-4 pt-4">
           <button
@@ -154,6 +266,8 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTestStore } from '@/stores/testStore';
 import TagSelector from '@/components/TagSelector.vue';
+import MarkdownEditor from '@/components/MarkdownEditor.vue';
+import { testService } from '@/services/testService';
 import type { TestStatus, TestEnv } from '@/types';
 
 const route = useRoute();
@@ -174,7 +288,17 @@ const form = ref({
   env: '' as TestEnv | '',
   status: '' as TestStatus | '',
   notes: '',
-  tagIds: [] as string[]
+  tagIds: [] as string[],
+  // Details
+  detailsMode: 'none' as 'none' | 'formatted' | 'free',
+  detailsTitle: '',
+  detailsContent: '',
+  // Formatted mode fields
+  testScenario: '',
+  testSteps: '',
+  expectedResults: '',
+  actualResults: '',
+  rootCause: '',
 });
 
 // Load test data if editing
@@ -214,6 +338,36 @@ const handleSubmit = async () => {
   try {
     let savedTestId: string;
     
+    // Generate details content based on mode
+    let detailsContent = '';
+    let detailsTitle = '';
+    
+    if (form.value.detailsMode === 'formatted') {
+      // Generate markdown from form fields
+      detailsContent = `# Test Details
+
+## Test Scenario
+${form.value.testScenario || 'N/A'}
+
+## Test Steps
+${form.value.testSteps || 'N/A'}
+
+## Expected Results
+${form.value.expectedResults || 'N/A'}
+
+## Actual Results
+${form.value.actualResults || 'N/A'}
+
+${form.value.rootCause ? `## Root Cause\n${form.value.rootCause}` : ''}`;
+      
+      detailsTitle = 'Test Details';
+    } else if (form.value.detailsMode === 'free') {
+      detailsContent = form.value.detailsContent;
+      // Extract first header as title
+      const firstHeader = detailsContent.match(/^#\s+(.+)$/m);
+      detailsTitle = firstHeader ? firstHeader[1] : 'Test Details';
+    }
+    
     if (isEdit.value && testId.value) {
       await testStore.updateTest(testId.value, {
         date: form.value.date,
@@ -225,6 +379,23 @@ const handleSubmit = async () => {
         notes: form.value.notes || undefined
       });
       savedTestId = testId.value;
+      
+      // Update details if provided
+      if (form.value.detailsMode !== 'none' && detailsContent) {
+        try {
+          await testService.updateDetails(savedTestId, {
+            title: detailsTitle,
+            content: detailsContent
+          });
+        } catch (err) {
+          // Details don't exist yet, create them
+          await testService.createDetails({
+            testId: savedTestId,
+            title: detailsTitle,
+            content: detailsContent
+          });
+        }
+      }
     } else {
       const newTest = await testStore.createTest({
         date: form.value.date,
@@ -236,6 +407,15 @@ const handleSubmit = async () => {
         notes: form.value.notes || undefined
       });
       savedTestId = newTest.id;
+      
+      // Create details if provided
+      if (form.value.detailsMode !== 'none' && detailsContent) {
+        await testService.createDetails({
+          testId: savedTestId,
+          title: detailsTitle,
+          content: detailsContent
+        });
+      }
     }
     
     // Update tags
