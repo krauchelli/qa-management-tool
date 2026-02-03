@@ -196,13 +196,33 @@
       <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xl font-semibold text-gray-900">Test Details</h3>
-          <button
-            v-if="!editingDetails"
-            @click="loadDetails"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-          >
-            {{ details ? 'Edit Details' : 'Add Details' }}
-          </button>
+          <div class="flex gap-2">
+            <!-- Copy Buttons (only show in view mode) -->
+            <button
+              v-if="!editingDetails && details"
+              @click="copyMarkdown"
+              class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm flex items-center gap-1"
+              title="Copy as Markdown (for Obsidian, etc)"
+            >
+              📋 Copy Markdown
+            </button>
+            <button
+              v-if="!editingDetails && details"
+              @click="copyDiscord"
+              class="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 text-sm flex items-center gap-1"
+              title="Copy for Discord (headers converted to bold)"
+            >
+              💬 Copy for Discord
+            </button>
+            <!-- Edit Button -->
+            <button
+              v-if="!editingDetails"
+              @click="loadDetails"
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+            >
+              {{ details ? 'Edit Details' : 'Add Details' }}
+            </button>
+          </div>
         </div>
 
         <!-- Details Editor with Navigation -->
@@ -308,6 +328,7 @@ import MarkdownEditor from '@/components/MarkdownEditor.vue';
 import MarkdownViewer from '@/components/MarkdownViewer.vue';
 import type { Test, Detail } from '@/types';
 import { testService } from '@/services/testService';
+import { convertToDiscordFormat, copyToClipboard } from '@/utils/discordFormatter';
 
 interface Header {
   level: number;
@@ -513,6 +534,31 @@ const extractHeadersFromMarkdown = (markdown: string): Header[] => {
 // Extract headers when content changes
 const extractHeaders = (markdown: string) => {
   headers.value = extractHeadersFromMarkdown(markdown);
+};
+
+// Copy functions
+const copyMarkdown = async () => {
+  if (!details.value?.content) return;
+  
+  const success = await copyToClipboard(details.value.content);
+  if (success) {
+    alert('✅ Copied as Markdown!');
+  } else {
+    alert('❌ Failed to copy');
+  }
+};
+
+const copyDiscord = async () => {
+  const content = details.value?.content;
+  if (!content) return;
+  
+  const discordFormat = convertToDiscordFormat(content);
+  const success = await copyToClipboard(discordFormat);
+  if (success) {
+    alert('✅ Copied for Discord!');
+  } else {
+    alert('❌ Failed to copy');
+  }
 };
 </script>
 

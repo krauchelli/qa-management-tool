@@ -31,7 +31,7 @@ onBeforeUnmount(() => {
 
 // Watch for content changes
 watch(() => props.content, (newValue) => {
-  if (viewerInstance && newValue !== viewerInstance.getMarkdown()) {
+  if (viewerInstance) {
     viewerInstance.setMarkdown(newValue);
   }
 });

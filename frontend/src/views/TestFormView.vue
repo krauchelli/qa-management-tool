@@ -317,7 +317,15 @@ onMounted(async () => {
           env: test.env,
           status: test.status,
           notes: test.notes || '',
-          tagIds: test.tags?.map(tt => tt.tag.id) || []
+          tagIds: test.tags?.map(tt => tt.tag.id) || [],
+          detailsMode: 'none',
+          detailsTitle: '',
+          detailsContent: '',
+          testScenario: '',
+          testSteps: '',
+          expectedResults: '',
+          actualResults: '',
+          rootCause: '',
         };
       }
     } catch (err) {

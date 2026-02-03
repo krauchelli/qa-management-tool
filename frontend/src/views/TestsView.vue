@@ -149,6 +149,9 @@
                 Tags
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Notes
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -197,6 +200,15 @@
                   />
                   <span v-if="!test.tags || test.tags.length === 0" class="text-gray-400 text-sm">-</span>
                 </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-600">
+                <span v-if="test.detail" class="truncate max-w-xs block" :title="test.detail.title">
+                  {{ test.detail.title }}
+                </span>
+                <span v-else-if="test.notes" class="truncate max-w-xs block" :title="test.notes">
+                  {{ test.notes }}
+                </span>
+                <span v-else class="text-gray-400">-</span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button
