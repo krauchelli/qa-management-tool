@@ -24,6 +24,7 @@ model Test {
   
   evidence    Evidence[]
   detail      Detail?
+  tags        TestTag[]
   
   @@index([date])
   @@index([status])
@@ -51,4 +52,30 @@ model Detail {
   updatedAt   DateTime @updatedAt
   
   test        Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  color       String    @default("#3B82F6")
+  category    String?
+  createdAt   DateTime  @default(now())
+  
+  tests       TestTag[]
+  
+  @@index([name])
+}
+
+model TestTag {
+  id          String   @id @default(cuid())
+  testId      String
+  tagId       String
+  createdAt   DateTime @default(now())
+  
+  test        Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  tag         Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@unique([testId, tagId])
+  @@index([testId])
+  @@index([tagId])
 }
