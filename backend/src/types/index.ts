@@ -14,6 +14,23 @@ export interface Test {
   updatedAt: Date;
   evidence?: Evidence[];
   detail?: Detail | null;
+  tags?: TestTag[];
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+  color: string;
+  category?: string | null;
+  createdAt: Date;
+}
+
+export interface TestTag {
+  id: string;
+  testId: string;
+  tagId: string;
+  createdAt: Date;
+  tag?: Tag;
 }
 
 export interface Evidence {
@@ -72,6 +89,18 @@ export interface CreateDetailDto {
 export interface UpdateDetailDto {
   title?: string;
   content?: string;
+}
+
+export interface CreateTagDto {
+  name: string;
+  color?: string;
+  category?: string;
+}
+
+export interface UpdateTagDto {
+  name?: string;
+  color?: string;
+  category?: string;
 }
 
 export interface TestFilters {

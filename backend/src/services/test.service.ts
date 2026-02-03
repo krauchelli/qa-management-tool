@@ -57,6 +57,11 @@ export class TestService {
       include: {
         evidence: true,
         detail: true,
+        tags: {
+          include: {
+            tag: true
+          }
+        }
       },
       orderBy,
       skip,
@@ -84,6 +89,11 @@ export class TestService {
       include: {
         evidence: true,
         detail: true,
+        tags: {
+          include: {
+            tag: true
+          }
+        }
       },
     });
 
@@ -112,6 +122,11 @@ export class TestService {
       include: {
         evidence: true,
         detail: true,
+        tags: {
+          include: {
+            tag: true
+          }
+        }
       },
     });
 
@@ -131,6 +146,11 @@ export class TestService {
       include: {
         evidence: true,
         detail: true,
+        tags: {
+          include: {
+            tag: true
+          }
+        }
       },
     });
 

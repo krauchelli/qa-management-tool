@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import testsRoutes from './routes/tests.routes';
 import detailsRoutes from './routes/details.routes';
 import statsRoutes from './routes/stats.routes';
+import tagsRoutes from './routes/tags.routes';
 
 // Load environment variables
 dotenv.config();
@@ -32,6 +33,7 @@ app.get('/api', (req, res) => {
       tests: '/api/tests',
       details: '/api/details',
       stats: '/api/stats',
+      tags: '/api/tags',
     },
   });
 });
@@ -39,6 +41,7 @@ app.get('/api', (req, res) => {
 app.use('/api/tests', testsRoutes);
 app.use('/api/details', detailsRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/tags', tagsRoutes);
 
 // 404 handler
 app.use((req, res) => {
