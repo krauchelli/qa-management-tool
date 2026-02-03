@@ -2,16 +2,39 @@
   <div>
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-3xl font-bold text-gray-900">All Tests</h2>
-      <router-link
-        to="/tests/new"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
-      >
-        + Add Test
-      </router-link>
+      <div class="flex items-center gap-3">
+        <!-- View Toggle -->
+        <div class="flex bg-gray-100 rounded-lg p-1">
+          <button
+            @click="viewMode = 'table'"
+            :class="[
+              'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+              viewMode === 'table' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:text-gray-900'
+            ]"
+          >
+            📋 Table
+          </button>
+          <button
+            @click="viewMode = 'kanban'"
+            :class="[
+              'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+              viewMode === 'kanban' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:text-gray-900'
+            ]"
+          >
+            📊 Kanban
+          </button>
+        </div>
+        <router-link
+          to="/tests/new"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+        >
+          + Add Test
+        </router-link>
+      </div>
     </div>
 
-    <!-- Filters & Sort -->
-    <div class="bg-white rounded-lg shadow p-4 mb-6">
+    <!-- Filters & Sort (only in table view) -->
+    <div v-if="viewMode === 'table'" class="bg-white rounded-lg shadow p-4 mb-6">
       <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
@@ -86,6 +109,15 @@
     <!-- Error State -->
     <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
       <p class="text-red-800">{{ error }}</p>
+    </div>
+
+    <!-- Kanban View -->
+    <div v-else-if="viewMode === 'kanban'">
+      <KanbanBoard
+        :tests="tests"
+        @view-test="handleViewTest"
+        @status-change="handleStatusChange"
+      />
     </div>
 
     <!-- Tests Table -->
@@ -208,11 +240,16 @@
 
 <script setup lang="ts">
 import { onMounted, computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { useTestStore } from '../stores/testStore';
 import TagBadge from '../components/TagBadge.vue';
+import KanbanBoard from '../components/KanbanBoard.vue';
+import type { TestStatus } from '../types';
 
+const router = useRouter();
 const testStore = useTestStore();
 
+const viewMode = ref<'table' | 'kanban'>('table');
 const searchQuery = ref('');
 const statusFilter = ref('');
 const envFilter = ref('');
@@ -323,6 +360,19 @@ const getEnvClass = (env: string): string => {
       return `${baseClass} bg-red-100 text-red-800`;
     default:
       return baseClass;
+  }
+};
+
+const handleViewTest = (testId: string) => {
+  router.push(`/tests/${testId}`);
+};
+
+const handleStatusChange = async (testId: string, newStatus: TestStatus) => {
+  try {
+    await testStore.updateTest(testId, { status: newStatus });
+    await testStore.fetchTests();
+  } catch (err: any) {
+    alert('Failed to update status: ' + err.message);
   }
 };
 </script>
