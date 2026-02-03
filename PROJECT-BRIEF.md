@@ -1,7 +1,7 @@
 # QA Management Tool - Project Brief
 
 **Status:** ✅ POC Complete  
-**Version:** 2.0.0  
+**Version:** -  
 **Created:** February 2026  
 **Author:** Personal Project - MyMedica Internship
 
@@ -9,9 +9,9 @@
 
 ## 📋 Executive Summary
 
-Ini merupakan **Proof of Concept (POC)** dari QA Management Tool yang disusun sebagai personal project selama internship di MyMedica sebagai QA Engineer. Tool ini dibuat untuk mengatasi pain points yang dialami selama proses testing, sekaligus sebagai bentuk pembelajaran dan evaluasi diri tentang workflow QA yang seharusnya.
+Project ini merupakan **Proof of Concept (POC)** dari QA Management Tool yang disusun sebagai personal project selama internship di MyMedica sebagai QA Engineer. Tool ini dibuat untuk mengatasi pain points yang dialami selama proses testing, sekaligus sebagai bentuk pembelajaran dan evaluasi diri tentang workflow QA yang seharusnya.
 
-Lebih dari sekedar membuat tools, project ini juga menjadi wadah buat aku untuk mengevaluasi ulang seperti apa yang harus dilakukan sebagai QA Engineer yang baik, serta menyalurkan minat pribadi di aspek IT development secara lebih luas—tidak hanya di full-stack, tapi di seluruh bentuk development.
+Lebih dari sekedar membuat tools, project ini juga menjadi wadah buatku untuk mengevaluasi ulang seperti apa yang harus dilakukan sebagai QA Engineer yang baik, serta menyalurkan minat pribadi di aspek IT development secara lebih luas—tidak hanya di full-stack, tapi di seluruh bentuk development.
 
 ---
 
@@ -19,7 +19,7 @@ Lebih dari sekedar membuat tools, project ini juga menjadi wadah buat aku untuk 
 
 ### Alasan Utama (Personal)
 
-Selama internship di MyMedica, pada awalnya ada **backlog QA** dari pihak MyMedica yang sebenernya bisa dilanjutkan. Tetapi seiring berjalannya waktu, purpose dari test cases yang ingin secara teknis dilanjutkan **berakhir menjadi test tracker yang alakadarnya**.
+Selama internship di MyMedica, pada awalnya ada **backlog QA** dari pihak MyMedica yang sebenernya bisa dilanjutkan, seperti google spreadsheet dan juga Browserstack yang telah di-assign oleh Mas Irwan. Tetapi seiring berjalannya waktu, purpose dari test cases yang ingin secara teknis dilanjutkan **berakhir menjadi test tracker yang alakadarnya**, dengan fair reason kalau banyak feature yang diimplementasikan dalam waktu yang cepat dan brief.
 
 **Masalahnya:**
 
@@ -33,14 +33,14 @@ Dari sini, muncul keinginan untuk membenah workflow pribadi. Jikalau kedepannya 
 
 #### 1. **Existing Tools (BrowserStack, dll)**
 
-- ❌ **Terikat paywall** - fitur lengkap butuh subscription mahal
+- ❌ **Terikat paywall** - fitur lengkap butuh subscription mahal (ini alasan yang sebenarnya tidak perlu aku sebut karena sudah masuk ke dalam implementasi juga sebelumnya)
 - ❌ **Kompleks untuk diadaptasi** - learning curve tinggi
 - ❌ **Export/Import Excel ribet** - format tidak fleksibel
 - ❌ **Tidak customizable** - harus ikut workflow mereka
 
 #### 2. **Personal Workflow dengan Obsidian**
 
-Selama intern, Obsidian digunakan sebagai rough tracker untuk:
+Selama intern, aku pribadi memutuskan untuk menggunakan Obsidian sebagai rough tracker untuk:
 
 - Track harian dalam pengetesan
 - Refer pada satu file utama dalam bentuk list
@@ -69,7 +69,7 @@ Workflow ini functional, tapi tidak scalable. Kalau test cases bertambah banyak 
 
 ### Konsep Utama
 
-**"Database-first QA tracker dengan Obsidian compatibility"** (Semoga)
+**"Personalized QA tracker dengan Obsidian compatibility"** (Semoga)
 
 Jadi idenya:
 
@@ -361,7 +361,7 @@ Ini align dengan best practice QA dimana **test case** (what to test) terpisah d
 
 ### Mengapa Membuat Sistem Ini?
 
-Sebenernya, sebagai QA Engineer, tidak harus buat tools sendiri. Tapi ada beberapa alasan kenapa project ini tetap dilakukan:
+Sebenernya, sebagai QA Engineer, tidak harus buat tools sendiri, even lebih ke ide yang sangat tidak bisa dicontoh dari asumsi ku pribadi. Tapi ada beberapa alasan kenapa project ini tetap dilakukan:
 
 **1. Evaluasi Diri sebagai QA Engineer**
 
@@ -384,8 +384,8 @@ Selama development, tools dan fasilitas dari MyMedica sangat membantu—terutama
 Aku paham bahwa ini adalah personal initiative dan mungkin ada banyak pertimbangan dari tim atau dari Mas Irwan. Aku sudah memikirkan hal ini dengan baik:
 
 - **Tidak mengganggu pekerjaan utama** - development dilakukan di luar jam kerja
-- **Bukan replacement untuk tools existing** - ini complement, bukan competitor
-- **Open untuk feedback** - kalau ada saran atau kritik, sangat welcome
+- **Bukan replacement untuk tools existing** - yakni sebuah complement, bukan competitor
+- **Open untuk feedback** - kalau ada saran atau kritik, aku sangat amat welcome
 - **Learning-focused** - prioritas utama adalah belajar, bukan production-ready tool
 
 ---
@@ -509,6 +509,6 @@ Tool ini masih dalam tahap **POC** dan akan terus dikembangkan sesuai kebutuhan.
 ---
 
 **Last Updated:** February 3, 2026  
-**Version:** 2.0.0  
-**Status:** ✅ POC Complete, Ready for Daily Use
+**Version:** -  
+**Status:**  POC Complete, while also being ongoing
 
