@@ -427,6 +427,248 @@ GET    /api/tests/:id/history       # Get test history
 
 ---
 
+## Feature 5: Test Case Library dengan Tag-Based Reference
+
+### Current State
+- System fokus ke **test tracking** (test execution results)
+- Tidak ada separation antara **test case** (template) dan **test execution** (hasil)
+- Test case tidak reusable across cycles
+- Tagging hanya untuk categorization, belum untuk reference
+
+### Problem Statement
+
+Saat ini, sistem ini lebih ke **bug tracker / test tracker** yang track hasil testing. Tapi dalam QA best practice, seharusnya ada separation:
+
+- **Test Case** = What to test (template, reusable)
+- **Test Execution** = Result of testing (specific to cycle/version)
+
+Contoh:
+- Test Case: "Login with valid credentials"
+- Execution 1 (Sprint 1): PASSED
+- Execution 2 (Sprint 2): FAILED (regression)
+- Execution 3 (Sprint 3): PASSED (fixed)
+
+### Proposed Solution
+
+**Test Case Library dengan Tag-Based Reference:**
+
+1. **Test Case Library**
+   - Repository of reusable test cases
+   - Each test case has:
+     - Title (e.g., "Login with valid credentials")
+     - Description
+     - Steps (markdown)
+     - Expected results
+     - Tags (for categorization and reference)
+   - Test cases are version-controlled
+
+2. **Tag-Based Reference**
+   - Test tracking (current system) bisa **refer** ke test case by tags
+   - Example: Test tracking tagged `#authentication` + `#positive-case` → auto-suggest test cases with same tags
+   - Test case bisa di-reuse di multiple cycles/versions
+
+3. **Reusability Flow**
+   - Create test case once in library
+   - When creating test tracking, select test case from library (filtered by tags)
+   - Test tracking inherits test case details
+   - Test tracking stores execution result (PASSED/FAILED/etc)
+   - Same test case can be used in multiple cycles
+
+4. **Version Tracking**
+   - Track hasil test case across different cycles
+   - See test case history: Sprint 1 (PASSED) → Sprint 2 (FAILED) → Sprint 3 (PASSED)
+   - Identify regression patterns
+
+### Database Changes
+
+```prisma
+model TestCase {
+  id          String    @id @default(cuid())
+  title       String    // e.g., "Login with valid credentials"
+  description String?
+  steps       String    // Markdown format
+  expected    String    // Expected results
+  priority    String    @default("MEDIUM")  // LOW, MEDIUM, HIGH, CRITICAL
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  tags        TestCaseTag[]
+  executions  Test[]    // Test trackings that reference this test case
+  
+  @@index([title])
+}
+
+model TestCaseTag {
+  id          String   @id @default(cuid())
+  testCaseId  String
+  tagId       String
+  createdAt   DateTime @default(now())
+  
+  testCase    TestCase @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  tag         Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@unique([testCaseId, tagId])
+  @@index([testCaseId])
+  @@index([tagId])
+}
+
+model Test {
+  // ... existing fields
+  testCaseId  String?   // Reference to test case (optional)
+  testCase    TestCase? @relation(fields: [testCaseId], references: [id], onDelete: SetNull)
+  // ... rest of fields
+  
+  @@index([testCaseId])
+}
+
+model Tag {
+  // ... existing fields
+  testCases   TestCaseTag[]  // Add this
+  // ... rest of fields
+}
+```
+
+### UI Changes
+
+**Test Case Library Page:**
+- List all test cases
+- Filter by tags
+- Search by title
+- Create new test case
+- Edit/delete test case
+- View test case details
+- See execution history (how many times used, results)
+
+**Test Case Form:**
+- Title input
+- Description textarea
+- Steps (markdown editor)
+- Expected results (markdown editor)
+- Priority dropdown
+- Tag selector (same as test tracking)
+
+**Test Tracking Form (Enhanced):**
+- Option 1: Create from scratch (current flow)
+- Option 2: Select from test case library
+  - Search test cases by tags
+  - Preview test case details
+  - Click to use test case
+  - Auto-fill feature, steps, expected results
+  - Still need to fill: date, env, status, evidence
+
+**Test Detail View (Enhanced):**
+- Show "Based on Test Case: [link]" if referenced
+- Link to test case library
+- Show test case version used
+
+**Test Case Detail View:**
+- Show test case details
+- List all executions (test trackings) that used this test case
+- Execution history timeline
+- Statistics: pass rate, fail rate, last tested
+
+**Dashboard (Enhanced):**
+- Test case coverage: how many test cases have been executed
+- Test case reuse rate
+- Most failed test cases
+
+### Use Case Example
+
+**Scenario: Login Testing Across Sprints**
+
+1. **Create Test Case (Once):**
+   - Title: "Login with valid credentials"
+   - Steps: "1. Open login page\n2. Enter valid email\n3. Enter valid password\n4. Click login"
+   - Expected: "User logged in successfully, redirected to dashboard"
+   - Tags: `#authentication`, `#positive-case`, `#critical`
+
+2. **Sprint 1 Testing:**
+   - Create test tracking
+   - Select test case "Login with valid credentials" (filtered by `#authentication`)
+   - Fill: Date (2026-02-01), Env (DEV), Status (PASSED)
+   - Add evidence (jam.dev link)
+   - Save
+
+3. **Sprint 2 Testing (Regression):**
+   - Create test tracking
+   - Select same test case "Login with valid credentials"
+   - Fill: Date (2026-02-15), Env (STAGING), Status (FAILED)
+   - Add evidence + notes about bug
+   - Save
+
+4. **Sprint 3 Testing (After Fix):**
+   - Create test tracking
+   - Select same test case "Login with valid credentials"
+   - Fill: Date (2026-03-01), Env (PROD), Status (PASSED)
+   - Add evidence
+   - Save
+
+5. **View Test Case History:**
+   - Open test case "Login with valid credentials"
+   - See execution timeline:
+     - Sprint 1 (DEV): PASSED ✅
+     - Sprint 2 (STAGING): FAILED ❌
+     - Sprint 3 (PROD): PASSED ✅
+   - Identify regression pattern
+
+### Why This Matters
+
+**Alignment dengan QA Best Practice:**
+- Separation of concerns: test case (what) vs test execution (result)
+- Reusability: write once, use many times
+- Traceability: track test case across cycles
+- Consistency: same test case, consistent steps
+
+**Efficiency:**
+- No need to rewrite test steps every sprint
+- Quick test creation: select test case, fill result
+- Easy to maintain: update test case once, affects all future executions
+
+**Reporting:**
+- Test case coverage metrics
+- Test case pass/fail trends
+- Identify flaky tests (pass/fail/pass pattern)
+- Regression detection
+
+### Implementation Complexity
+- **Backend:** High (new models, complex relationships, history tracking)
+- **Frontend:** High (test case library UI, selection flow, history timeline)
+- **Database Migration:** Medium (add new tables, migrate existing tests)
+- **Estimated Time:** 5-7 days
+
+### Implementation Phases
+
+**Phase 1: Test Case Library (2-3 days)**
+- Create TestCase model
+- Test case CRUD API
+- Test case library UI
+- Tag integration
+
+**Phase 2: Reference System (2-3 days)**
+- Link Test to TestCase
+- Test case selection in test form
+- Auto-fill from test case
+- "Based on test case" indicator
+
+**Phase 3: History & Analytics (1-2 days)**
+- Execution history view
+- Test case statistics
+- Dashboard metrics
+- Trend charts
+
+### Migration Strategy
+
+**For Existing Tests:**
+- Option 1: Keep as-is (no test case reference)
+- Option 2: Auto-generate test cases from existing tests
+  - Group by feature name + tags
+  - Create test case for each unique combination
+  - Link existing tests to generated test cases
+
+**Recommended:** Option 1 (keep as-is), let users gradually migrate to test case library
+
+---
+
 ## Recommended Implementation Order
 
 ### Option A: Feature-by-Feature (Recommended)
@@ -452,15 +694,22 @@ Implement one complete feature at a time:
    - Builds on tagging system
    - Enables long-term tracking
 
-**Total Time: 9-13 days**
+5. **Phase 5: Test Case Library** (5-7 days)
+   - Most advanced feature
+   - Requires cycles and tagging to be in place
+   - Biggest architectural change
+   - Aligns with QA best practices
+
+**Total Time: 14-19 days**
 
 ### Option B: Parallel Development
 Implement multiple features simultaneously:
 
 1. **Week 1:** Tagging + Kanban (can be done in parallel)
 2. **Week 2:** Details Merge + Test Cycles
+3. **Week 3:** Test Case Library
 
-**Total Time: 2 weeks**
+**Total Time: 3 weeks**
 
 ### Option C: MVP First
 Implement minimal versions of all features:
@@ -469,9 +718,10 @@ Implement minimal versions of all features:
 2. **Day 3-4:** Basic kanban (no drag-and-drop)
 3. **Day 5-6:** Basic details merge (no navigation)
 4. **Day 7-8:** Basic cycles (no history)
-5. **Day 9-10:** Polish and complete features
+5. **Day 9-11:** Basic test case library (no history tracking)
+6. **Day 12-14:** Polish and complete features
 
-**Total Time: 10 days**
+**Total Time: 14 days**
 
 ---
 
