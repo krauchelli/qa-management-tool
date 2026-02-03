@@ -99,4 +99,26 @@ export const testService = {
   async deleteDetails(testId: string): Promise<void> {
     await api.delete(`/details/${testId}`);
   },
+
+  /**
+   * Get tags for test
+   */
+  async getTestTags(testId: string) {
+    const response = await api.get(`/tests/${testId}/tags`);
+    return response.data;
+  },
+
+  /**
+   * Add tag to test
+   */
+  async addTagToTest(testId: string, tagId: string) {
+    await api.post(`/tests/${testId}/tags`, { tagId });
+  },
+
+  /**
+   * Remove tag from test
+   */
+  async removeTagFromTest(testId: string, tagId: string) {
+    await api.delete(`/tests/${testId}/tags/${tagId}`);
+  },
 };

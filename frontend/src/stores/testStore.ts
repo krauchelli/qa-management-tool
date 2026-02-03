@@ -164,5 +164,33 @@ export const useTestStore = defineStore('test', {
     clearFilters() {
       this.filters = {};
     },
+
+    async updateTestTags(testId: string, tagIds: string[]) {
+      try {
+        // Get current tags
+        const currentTags = await testService.getTestTags(testId);
+        const currentTagIds = currentTags.map((t: any) => t.id);
+
+        // Add new tags
+        for (const tagId of tagIds) {
+          if (!currentTagIds.includes(tagId)) {
+            await testService.addTagToTest(testId, tagId);
+          }
+        }
+
+        // Remove old tags
+        for (const tagId of currentTagIds) {
+          if (!tagIds.includes(tagId)) {
+            await testService.removeTagFromTest(testId, tagId);
+          }
+        }
+
+        // Refresh test data
+        await this.fetchTest(testId);
+      } catch (error: any) {
+        this.error = error.message || 'Failed to update tags';
+        throw error;
+      }
+    },
   },
 });

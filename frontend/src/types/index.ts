@@ -14,6 +14,24 @@ export interface Test {
   updatedAt: string;
   evidence?: Evidence[];
   detail?: Detail | null;
+  tags?: TestTag[];
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+  color: string;
+  category?: string | null;
+  createdAt: string;
+  usageCount?: number;
+}
+
+export interface TestTag {
+  id: string;
+  testId: string;
+  tagId: string;
+  createdAt: string;
+  tag: Tag;
 }
 
 export interface Evidence {
