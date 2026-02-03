@@ -286,3 +286,44 @@ For issues or questions:
 **Last Updated:** 2026-02-02
 
 🎉 **The QA Management Tool V2 is complete and ready for use!**
+
+
+---
+
+## 🆕 Latest Updates (2026-02-03)
+
+### Phase 8: Merged Notes & Details Flow ✅ COMPLETE
+- Can add details when creating/editing tests (not just in detail view)
+- 2 input modes in TestFormView:
+  - **Formatted mode**: Form fields (Test Scenario, Test Steps, Expected Results, Actual Results, Root Cause) that auto-generate markdown
+  - **Free mode**: Toast UI Editor for direct markdown editing
+- Details created automatically when test is saved
+- TestsView now shows detail title in Notes column (with fallback to notes field)
+
+### Phase 9: Copy Buttons with Discord Format ✅ COMPLETE
+- MarkdownViewer component uses Toast UI Viewer (preserves markdown syntax on copy)
+- 2 copy buttons in TestDetailView:
+  - **📋 Copy Markdown**: Full markdown syntax preserved (for Obsidian, etc.)
+  - **💬 Copy for Discord**: Converts headers to bold, tables to code blocks
+- `discordFormatter.ts` utility with clipboard API + fallback
+- Copy buttons only visible in view mode (not edit mode)
+
+### Technical Improvements
+- Fixed TypeScript errors in TestFormView (missing detail fields in form state)
+- Fixed MarkdownViewer watch function (removed non-existent getMarkdown method)
+- Updated TestsView table to include Notes column showing detail.title or notes
+- All changes hot-reloaded successfully
+
+### Files Modified
+- `frontend/src/views/TestDetailView.vue` - Added copy buttons and functions
+- `frontend/src/views/TestFormView.vue` - Added details section with dual mode input
+- `frontend/src/components/MarkdownViewer.vue` - Created Toast UI Viewer component
+- `frontend/src/utils/discordFormatter.ts` - Created Discord format converter
+- `frontend/src/views/TestsView.vue` - Added Notes column to table
+
+### Ready to Test
+Both servers running and hot-reloaded:
+- Backend: http://localhost:3000
+- Frontend: http://localhost:5173
+
+All features are now functional and ready for testing!
