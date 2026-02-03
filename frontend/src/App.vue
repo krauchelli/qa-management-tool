@@ -23,6 +23,13 @@
               >
                 Tests
               </router-link>
+              <router-link
+                to="/tags"
+                class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
+                active-class="bg-gray-100"
+              >
+                Tags
+              </router-link>
             </nav>
           </div>
           <div class="flex items-center gap-4">

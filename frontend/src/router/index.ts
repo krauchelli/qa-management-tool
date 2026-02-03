@@ -28,6 +28,11 @@ const router = createRouter({
       name: 'EditTest',
       component: () => import('../views/TestFormView.vue'),
     },
+    {
+      path: '/tags',
+      name: 'Tags',
+      component: () => import('../views/TagsView.vue'),
+    },
   ],
 });
 
