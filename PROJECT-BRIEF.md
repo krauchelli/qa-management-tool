@@ -248,9 +248,72 @@ Saat ini, sistem ini fokus ke **test tracking** (bug tracker / test tracker). Ke
 
 Ini align dengan best practice QA dimana **test case** (what to test) terpisah dari **test execution** (hasil testing). Test tracking yang sekarang sebenernya lebih ke test execution, jadi butuh layer test case library untuk lebih proper.
 
-**Status:** � Future Enhancement (needs architecture refactor)
+**Status:** 💭 Future Enhancement (needs architecture refactor)
 
-### 3. **Export/Import**
+### 3. **Jira Integration**
+
+**Purpose:** Integrate dengan Jira sebagai source of truth
+
+**⚠️ CRITICAL untuk Team Adoption:**
+
+Berdasarkan feedback dari Mas Irwan, **Jira adalah source of truth** di MyMedica. Untuk team adoption, test results **harus muncul di Jira ticket detail**, bukan hanya di tool terpisah.
+
+**Konsep:**
+
+Jira integration dengan 2 arah:
+1. **Tool → Jira:** Post test results sebagai comment di Jira ticket
+2. **Jira → Tool:** Fetch Jira issue details untuk auto-fill form
+
+**Use case:**
+
+**Scenario 1: Test Existing Jira Ticket**
+- Engineer create Jira ticket: "MM-123: Login page broken"
+- QA input Jira ticket di tool: `MM-123`
+- Tool auto-fetch: Title, description, status, assignee, labels
+- QA run test → Result: FAILED
+- Tool auto-post comment ke MM-123 dengan test results
+- Engineer bisa lihat test result langsung di Jira ticket
+
+**Scenario 2: Create Bug from Failed Test**
+- QA run test → Result: FAILED
+- Click "Create Jira Bug" button
+- Tool auto-create Jira ticket dengan test details
+- Jira ticket created: `MM-456`
+- Tool auto-link test ke MM-456
+
+**Features:**
+
+**Phase 1: Read-Only (2-3 days)**
+- Fetch Jira issue details via API
+- Auto-fill feature name, description, status
+- Display Jira status badge
+- Link back to Jira ticket
+
+**Phase 2: Write Operations (3-4 days)**
+- Post test results as Jira comment
+- Format test results (markdown → Jira format)
+- Include evidence links
+- Sync tags to Jira labels
+
+**Phase 3: Advanced (Optional, 4-5 days)**
+- Create Jira bug from failed test
+- Update Jira status from tool
+- Bi-directional sync via webhooks
+
+**Technical Requirements:**
+- Jira API token (per user)
+- Jira base URL (e.g., https://mymedica.atlassian.net)
+- Permissions: Read issues, Add comments, Create issues, Edit labels
+
+**Why this matters:**
+- **Single source of truth:** Test results terdokumentasi di Jira
+- **No context switching:** Engineer tidak perlu buka tool terpisah
+- **Better visibility:** Test status visible untuk seluruh tim
+- **Faster feedback loop:** Test results langsung muncul di Jira ticket
+
+**Status:** 🎯 High Priority for Team Adoption (needs Jira API access)
+
+### 4. **Export/Import**
 
 **Purpose:** Sync dengan Obsidian vault
 
@@ -269,7 +332,7 @@ Ini align dengan best practice QA dimana **test case** (what to test) terpisah d
 
 **Status:** 📋 Planned (2-3 days implementation)
 
-### 4. **Bulk Operations**
+### 5. **Bulk Operations**
 
 **Purpose:** Efficiency untuk banyak tests
 
@@ -282,7 +345,7 @@ Ini align dengan best practice QA dimana **test case** (what to test) terpisah d
 
 **Status:** 📋 Planned (1-2 days implementation)
 
-### 5. **Advanced Filtering**
+### 6. **Advanced Filtering**
 
 **Purpose:** Find tests lebih cepat
 
@@ -491,6 +554,88 @@ qa-management-tool/
 
 ---
 
+## ⚠️ Scope & Disclaimer
+
+### ✅ What This Tool IS:
+
+1. **Test Tracking Tool** - track hasil testing (PASSED/FAILED/IN_PROGRESS)
+2. **Personal Efficiency Tool** - optimize daily QA workflow
+3. **Learning Project** - hands-on full-stack development experience
+4. **Markdown-Compatible** - export ke Obsidian, copy to Discord
+5. **Lightweight** - run di laptop, no cloud infrastructure needed
+
+### ❌ What This Tool IS NOT:
+
+1. **NOT Test Case Management** - ini bukan repository of test cases (yet)
+2. **NOT Enterprise Tool** - belum ada multi-user, permissions, audit logs
+3. **NOT BrowserStack Replacement** - tidak ada browser testing, device emulation
+4. **NOT Production-Ready** - masih PoC phase, belum hardened untuk production
+5. **NOT Team Collaboration Tool** - single-user focused (for now)
+
+### 🔮 For Team Adoption:
+
+**⚠️ CRITICAL REQUIREMENTS:**
+
+Jika tool ini akan digunakan untuk team (bukan personal use), maka **Jira integration adalah mandatory**, bukan optional. Berdasarkan feedback dari Mas Irwan:
+
+> "Sama bisa di-link ke JIRA kah? Karena source of truth kita JIRA. Jadi aku pasti lebih prefer result testing muncul di detail task JIRA, gak buka page ini itu lagi."
+
+**Requirements untuk Team Adoption:**
+
+1. ✅ **Jira Integration (Phase 1 & 2 minimum)**
+   - Fetch Jira issue details
+   - Post test results as Jira comment
+   - Sync tags to Jira labels
+
+2. ✅ **Multi-user Support**
+   - User authentication
+   - Permissions & roles
+   - User-specific data
+
+3. ✅ **Production Infrastructure**
+   - Cloud deployment (bukan local SQLite)
+   - Database backup & recovery
+   - Monitoring & logging
+
+4. ✅ **Security & Compliance**
+   - Secure API token storage
+   - Audit logs
+   - Data privacy compliance
+
+**Timeline Estimate:**
+- Jira Integration: 5-7 days
+- Multi-user Support: 7-10 days
+- Production Deployment: 3-5 days
+- **Total: 3-4 weeks**
+
+**Decision:**
+- **Jika Jira integration diimplementasikan** → Tool bisa dievaluasi untuk team adoption
+- **Jika tidak** → Tool tetap valuable untuk personal use, tapi **tidak suitable untuk team**
+
+### 📊 Positioning:
+
+**For Personal Use:**
+- ✅ Tool sudah siap digunakan untuk daily workflow
+- ✅ Lebih efisien dari markdown manual
+- ✅ Good learning experience
+
+**For Team Use:**
+- ⚠️ Butuh Jira integration terlebih dahulu
+- ⚠️ Butuh multi-user support
+- ⚠️ Butuh production infrastructure
+
+**Comparison dengan Enterprise Tools:**
+
+Untuk production team dengan Jira workflow yang established, tools seperti BrowserStack atau TestRail tetap lebih suitable karena:
+- Enterprise features (SSO, audit logs, compliance)
+- Mature Jira integration
+- Team collaboration features
+- Professional support & SLA
+
+Tool ini lebih ke **personal efficiency** dan **learning experience**, bukan untuk replace enterprise tools.
+
+---
+
 ## 📝 Conclusion
 
 QA Management Tool ini merupakan **personal project** yang lahir dari pain points nyata selama internship. Tujuan utamanya bukan untuk replace existing tools, tapi untuk:
@@ -508,7 +653,7 @@ Tool ini masih dalam tahap **POC** dan akan terus dikembangkan sesuai kebutuhan.
 
 ---
 
-**Last Updated:** February 3, 2026  
-**Version:** -  
-**Status:**  POC Complete, while also being ongoing
+**Last Updated:** February 4, 2026  
+**Version:** 2.0.0  
+**Status:** ✅ POC Complete, Ready for Daily Use (Personal) | ⚠️ Needs Jira Integration for Team Adoption
 
