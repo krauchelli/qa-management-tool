@@ -1,12 +1,6 @@
 # Proof of Concept (PoC)
 # QA Management Tool - Test Tracking System
 
-**Status:** 🚧 PoC Phase  
-**Version:** 2.0.0  
-**Created:** February 2026  
-**Author:** Dwi Ananda - QA Engineer Intern  
-**Reviewer:** Irwansyah R.
-
 ---
 
 ## Problem
