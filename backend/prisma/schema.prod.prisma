@@ -1,0 +1,117 @@
+// Prisma schema for QA Management Tool - Production (PostgreSQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Test {
+  id          String      @id @default(cuid())
+  date        String      // YYYY-MM-DD format
+  feature     String
+  jira        String?
+  jiraUrl     String?
+  status      String      // "PASSED", "FAILED", "IN_PROGRESS", "NEED_CONFIRMATION"
+  env         String      // "DEV", "STAGING", "PROD"
+  notes       String?
+  detailFile  String?
+  testCaseId  String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  evidence    Evidence[]
+  detail      Detail?
+  tags        TestTag[]
+  testCase    TestCase?   @relation(fields: [testCaseId], references: [id], onDelete: SetNull)
+  
+  @@index([date])
+  @@index([status])
+  @@index([env])
+  @@index([testCaseId])
+}
+
+model Evidence {
+  id          String   @id @default(cuid())
+  testId      String
+  type        String
+  url         String
+  description String?
+  
+  test        Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  
+  @@index([testId])
+}
+
+model Detail {
+  id        String   @id @default(cuid())
+  testId    String   @unique
+  title     String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  color     String      @default("#3B82F6")
+  category  String?
+  createdAt DateTime    @default(now())
+  
+  tests     TestTag[]
+  testCases TestCaseTag[]
+  
+  @@index([name])
+  @@index([category])
+}
+
+model TestTag {
+  id        String   @id @default(cuid())
+  testId    String
+  tagId     String
+  createdAt DateTime @default(now())
+  
+  test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@unique([testId, tagId])
+  @@index([testId])
+  @@index([tagId])
+}
+
+model TestCase {
+  id          String        @id @default(cuid())
+  title       String
+  description String?       @db.Text
+  steps       String        @db.Text
+  expected    String        @db.Text
+  priority    String        @default("MEDIUM")  // LOW, MEDIUM, HIGH, CRITICAL
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  tags        TestCaseTag[]
+  executions  Test[]
+  
+  @@index([title])
+  @@index([priority])
+}
+
+model TestCaseTag {
+  id          String   @id @default(cuid())
+  testCaseId  String
+  tagId       String
+  createdAt   DateTime @default(now())
+  
+  testCase    TestCase @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  tag         Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@unique([testCaseId, tagId])
+  @@index([testCaseId])
+  @@index([tagId])
+}

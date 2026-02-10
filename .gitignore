@@ -38,3 +38,16 @@ backend/prisma/dev.db-journal
 
 # Backup
 v1-backup/
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Database backups
+backend/backups/*.sql
+backend/backups/*.sql.gz
+
+# Production database
+backend/prisma/prod.db
+backend/prisma/prod.db-journal

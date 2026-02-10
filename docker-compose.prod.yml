@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Production)
+  postgres:
+    image: postgres:15-alpine
+    container_name: qa-tool-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: qauser
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme123}
+      POSTGRES_DB: qa_management
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - qa-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qauser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: qa-tool-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://qauser:${POSTGRES_PASSWORD:-changeme123}@postgres:5432/qa_management
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - qa-network
+    volumes:
+      # Mount for database backups
+      - ./backend/backups:/app/backups
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend (Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: qa-tool-frontend
+    restart: unless-stopped
+    ports:
+      - "85:80"
+    depends_on:
+      - backend
+    networks:
+      - qa-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  qa-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
