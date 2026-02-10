@@ -13,7 +13,9 @@
     "prisma:push": "prisma db push",
     "import": "ts-node scripts/import-from-markdown.ts",
     "verify": "ts-node scripts/verify-import.ts",
-    "seed:tags": "ts-node scripts/seed-tags.ts"
+    "seed:tags": "ts-node scripts/seed-tags.ts",
+    "backup": "ts-node scripts/backup-before-migration.ts",
+    "restore": "ts-node scripts/restore-from-backup.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

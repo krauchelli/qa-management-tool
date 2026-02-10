@@ -1,0 +1,923 @@
+{
+  "timestamp": "2026-02-10T04:48:49.004Z",
+  "version": "2.0.0",
+  "tests": [
+    {
+      "id": "cml5v1ur50000tcdfpw34qiow",
+      "date": "2026-02-02",
+      "feature": "HRIS - Pengajuan Cuti",
+      "jira": "#MD-1871",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1871",
+      "status": "IN_PROGRESS",
+      "env": "PROD",
+      "notes": "Date Mismatch - Internal Server Error saat tolak dari dropdown",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.657Z",
+      "updatedAt": "2026-02-03T00:43:46.424Z",
+      "evidence": [
+        {
+          "id": "cml5v1urg0002tcdfdlxvi3mt",
+          "testId": "cml5v1ur50000tcdfpw34qiow",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/767324af-d1bb-4426-83b8-9e20965167a0",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1us10004tcdftzl9iecs",
+        "testId": "cml5v1ur50000tcdfpw34qiow",
+        "title": "Internal Server Error & Date Mismatch",
+        "content": "## Issue #1: Internal Server Error\n\n**Severity:** High\n\n### Issue Summary\nInternal Server Error terjadi saat menolak pengajuan cuti dari dropdown di halaman list, tetapi berhasil setelah membuka detail terlebih dahulu.\n\n### Steps to Reproduce\n1. Login sebagai admin/approver\n2. Buka halaman **Pengajuan Cuti** (list view)\n3. Klik dropdown action pada salah satu pengajuan\n4. Pilih **\"Tolak\"** langsung dari dropdown\n\n### Expected Result\n- Pengajuan berhasil ditolak\n- Status berubah menjadi \"Ditolak\"\n- Tidak ada error\n\n### Actual Result\n- **Internal Server Error** muncul\n- Pengajuan tidak ditolak\n- User harus buka detail dulu baru bisa tolak\n\n### Test Evidence\n- Validasi #1: Tolak dari Detail → ✅ Berhasil\n- Validasi #2: Buka Detail Dulu → ✅ Berhasil\n- Validasi #3: Langsung dari Dropdown → ❌ Error\n\n## Issue #2: Date Mismatch\n\n**Severity:** Minor\n\n### Issue Summary\nTanggal pengajuan cuti yang ditampilkan berbeda antara HRIS mobile dan Web Admin.\n\n**Example:**\n- HRIS Mobile: `2 Februari - 2 Februari`\n- Web Admin: `2 Februari - 3 Februari`\n\nTanggal akhir di Web Admin lebih 1 hari dari yang seharusnya.",
+        "createdAt": "2026-02-03T00:28:44.689Z",
+        "updatedAt": "2026-02-03T00:28:44.689Z"
+      },
+      "tags": [
+        {
+          "id": "cml5vl6ll0001nlqm86uxmjmz",
+          "testId": "cml5v1ur50000tcdfpw34qiow",
+          "tagId": "cml5v1scv000911vh0s2nwksj",
+          "createdAt": "2026-02-03T00:43:46.473Z",
+          "tag": {
+            "id": "cml5v1scv000911vh0s2nwksj",
+            "name": "api",
+            "color": "#8B5CF6",
+            "category": "feature",
+            "createdAt": "2026-02-03T00:28:41.552Z"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cml5v1us90005tcdf4zoidhjw",
+      "date": "2026-01-30",
+      "feature": "Cetak Detail Resep",
+      "jira": null,
+      "jiraUrl": null,
+      "status": "IN_PROGRESS",
+      "env": "STAGING",
+      "notes": "Data Pasien Mismatch - nomor telepon dan tinggi badan salah",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.698Z",
+      "updatedAt": "2026-02-03T00:28:44.698Z",
+      "evidence": [
+        {
+          "id": "cml5v1ush0007tcdfbiucq76l",
+          "testId": "cml5v1us90005tcdf4zoidhjw",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/216b5a57-4c2c-4b38-84c6-3956915aaa67",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1uso0009tcdf9gec209k",
+        "testId": "cml5v1us90005tcdf4zoidhjw",
+        "title": "Data Pasien Mismatch",
+        "content": "## Issue: Data Pasien Mismatch\n\n**Status:** 🟡 In Progress  \n**Environment:** Staging\n\n### Issue Summary\nRegression test pada `Cetak Detail Resep`, ada data pasien mismatch:\n- Nomor telepon pasien salah\n- Berat/tinggi pasien (tinggi badan salah)\n\n### Next Steps\n- [ ] Report to dev team\n- [ ] Create Jira ticket\n- [ ] Retest after fix",
+        "createdAt": "2026-02-03T00:28:44.712Z",
+        "updatedAt": "2026-02-03T00:28:44.712Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1usv000atcdfg8n62unh",
+      "date": "2026-01-29",
+      "feature": "Manajemen Personil",
+      "jira": null,
+      "jiraUrl": null,
+      "status": "IN_PROGRESS",
+      "env": "STAGING",
+      "notes": "Tambah Personil Issues - double alert, data tidak tersimpan",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.720Z",
+      "updatedAt": "2026-02-03T00:28:44.720Z",
+      "evidence": [],
+      "detail": {
+        "id": "cml5v1ut5000ctcdf99o09rla",
+        "testId": "cml5v1usv000atcdfg8n62unh",
+        "title": "Tambah Personil Issues",
+        "content": "## Issue: Tambah Personil\n\n**Status:** 🟡 In Progress  \n**Environment:** Staging\n\n### Positive Tests (✅ Passed)\n- Admin role\n- Kasir role\n- Front Office role\n\n### Issues Found\n- ❌ Double success alert/notification\n- ❌ Data pengisian `Jadwal Pembayaran` tidak tersimpan\n- ❌ Dibutuhkan error handler atau alert dari sisi FE\n\n### Next Steps\n- [ ] Report UI issues (double alert)\n- [ ] Report data persistence issue (Jadwal Pembayaran)\n- [ ] Request FE error handler improvement\n- [ ] Retest after fixes",
+        "createdAt": "2026-02-03T00:28:44.730Z",
+        "updatedAt": "2026-02-03T00:28:44.730Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1utc000dtcdf2dhkehz3",
+      "date": "2025-12-01",
+      "feature": "General UI",
+      "jira": "#MD-1714",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1714",
+      "status": "NEED_CONFIRMATION",
+      "env": "DEV",
+      "notes": "Confirmation Modal Error",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.737Z",
+      "updatedAt": "2026-02-03T01:02:04.181Z",
+      "evidence": [],
+      "detail": {
+        "id": "cml5v1utk000ftcdf43aqxfa1",
+        "testId": "cml5v1utc000dtcdf2dhkehz3",
+        "title": "Confirmation Modal Error",
+        "content": "## Issue: Confirmation Modal Error\n\n**Status:** 🔴 Open  \n**Feature:** General UI  \n**First Found:** 2025-12\n\n### Description\nModal konfirmasi menampilkan error atau tidak muncul dengan benar\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Get detailed reproduction steps\n- [ ] Verify fix",
+        "createdAt": "2026-02-03T00:28:44.744Z",
+        "updatedAt": "2026-02-03T00:28:44.744Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1utr000gtcdfby9ggomz",
+      "date": "2025-12-01",
+      "feature": "General UI",
+      "jira": "#MD-1720",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1720",
+      "status": "NEED_CONFIRMATION",
+      "env": "DEV",
+      "notes": "Toast Double - notification muncul dua kali",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.751Z",
+      "updatedAt": "2026-02-03T01:02:02.749Z",
+      "evidence": [],
+      "detail": {
+        "id": "cml5v1uty000itcdfwv4thz3j",
+        "testId": "cml5v1utr000gtcdfby9ggomz",
+        "title": "Toast Double",
+        "content": "## Issue: Toast Double\n\n**Status:** 🔴 Open  \n**Feature:** General UI  \n**First Found:** 2025-12\n\n### Description\nToast notification muncul dua kali untuk satu action\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Identify root cause\n- [ ] Verify fix doesn't break other notifications",
+        "createdAt": "2026-02-03T00:28:44.758Z",
+        "updatedAt": "2026-02-03T00:28:44.758Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uu4000jtcdfo08a4xgk",
+      "date": "2025-12-01",
+      "feature": "HRIS",
+      "jira": "#MD-1817",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1817",
+      "status": "PASSED",
+      "env": "DEV",
+      "notes": "Login Redirect Issue - redirect tidak berfungsi setelah login",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.765Z",
+      "updatedAt": "2026-02-03T00:58:53.251Z",
+      "evidence": [],
+      "detail": {
+        "id": "cml5v1uub000ltcdf0a3yyx7s",
+        "testId": "cml5v1uu4000jtcdfo08a4xgk",
+        "title": "Login Redirect Issue",
+        "content": "## Issue: HRIS Login Redirect\n\n**Status:** 🔴 Open  \n**Feature:** HRIS  \n**First Found:** 2025-12\n\n### Description\nSetelah login HRIS, redirect tidak berfungsi dengan benar\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Check routing configuration\n- [ ] Verify authentication flow",
+        "createdAt": "2026-02-03T00:28:44.771Z",
+        "updatedAt": "2026-02-03T00:28:44.771Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uui000mtcdfgiv26nw2",
+      "date": "2025-12-01",
+      "feature": "HRIS",
+      "jira": "#MD-1798",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1798",
+      "status": "PASSED",
+      "env": "DEV",
+      "notes": "Presensi Error",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.778Z",
+      "updatedAt": "2026-02-03T00:58:44.296Z",
+      "evidence": [],
+      "detail": {
+        "id": "cml5v1uup000otcdf24oh1a3z",
+        "testId": "cml5v1uui000mtcdfgiv26nw2",
+        "title": "Presensi Error",
+        "content": "## Issue: HRIS Presensi Error\n\n**Status:** 🔴 Open  \n**Feature:** HRIS  \n**First Found:** 2025-12\n\n### Description\nError saat melakukan presensi di HRIS\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Get error logs\n- [ ] Identify specific error scenario",
+        "createdAt": "2026-02-03T00:28:44.785Z",
+        "updatedAt": "2026-02-03T00:28:44.785Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uuv000ptcdfgma30och",
+      "date": "2025-12-01",
+      "feature": "Portal",
+      "jira": "#MD-1825",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1825",
+      "status": "IN_PROGRESS",
+      "env": "DEV",
+      "notes": "UI Fixes - various UI improvements",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.792Z",
+      "updatedAt": "2026-02-03T00:28:44.792Z",
+      "evidence": [],
+      "detail": {
+        "id": "cml5v1uv3000rtcdf7wk5mdrw",
+        "testId": "cml5v1uuv000ptcdfgma30och",
+        "title": "Portal UI Fixes",
+        "content": "## Issue: Portal UI Fixes\n\n**Status:** 🟡 In Progress  \n**Feature:** Portal  \n**First Found:** 2025-12\n\n### Description\nVarious UI fixes untuk portal\n\n### Next Steps\n- [ ] Review UI fix list\n- [ ] Test each fix individually\n- [ ] Verify no regression",
+        "createdAt": "2026-02-03T00:28:44.799Z",
+        "updatedAt": "2026-02-03T00:28:44.799Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uv9000stcdfyzkvq8i0",
+      "date": "2025-07-12",
+      "feature": "Farmasi - Penjualan Obat",
+      "jira": "#MD-844",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-844",
+      "status": "FAILED",
+      "env": "DEV",
+      "notes": "SOAP Apoteker - Alergi tidak sinkron",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.806Z",
+      "updatedAt": "2026-02-03T00:28:44.806Z",
+      "evidence": [
+        {
+          "id": "cml5v1uvg000utcdfifk3eyxt",
+          "testId": "cml5v1uv9000stcdfyzkvq8i0",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/3f1f5e0d-1e50-418f-b3ce-f1d7303256f5",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1uvn000wtcdfuzlxgmxh",
+        "testId": "cml5v1uv9000stcdfyzkvq8i0",
+        "title": "SOAP Apoteker - Data Alergi Issue",
+        "content": "## Issue: SOAP Apoteker - Data Alergi\n\n**Status:** 🔴 Open  \n**Jira:** MD-844  \n**Environment:** Dev\n\n### Description\n- Data alergi tidak sinkron dengan riwayat alergi pasien\n- Tidak bisa menambah atau mengubah data alergi di form SOAP Apoteker\n\n### Evidence\nhttps://jam.dev/c/3f1f5e0d-1e50-418f-b3ce-f1d7303256f5\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Verify data sync mechanism\n- [ ] Test add/edit functionality",
+        "createdAt": "2026-02-03T00:28:44.819Z",
+        "updatedAt": "2026-02-03T00:28:44.819Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uvu000xtcdfddqd10o4",
+      "date": "2025-07-12",
+      "feature": "Farmasi - Pelayanan Resep",
+      "jira": null,
+      "jiraUrl": null,
+      "status": "FAILED",
+      "env": "DEV",
+      "notes": "Dropdown Issue - dropdown terkadang mental",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.826Z",
+      "updatedAt": "2026-02-03T12:23:11.827Z",
+      "evidence": [],
+      "detail": {
+        "id": "cml5v1uw1000ztcdffm89d3tx",
+        "testId": "cml5v1uvu000xtcdfddqd10o4",
+        "title": "Dropdown Issue",
+        "content": "## Issue: Pelayanan Resep - Dropdown\n\n**Status:** 🔴 Open  \n**Environment:** Dev\n\n### Description\nDropdown terkadang \"mental\" (tidak stabil)\n\n### Next Steps\n- [ ] Identify specific dropdown\n- [ ] Get reproduction steps\n- [ ] Test on different browsers",
+        "createdAt": "2026-02-03T00:28:44.833Z",
+        "updatedAt": "2026-02-03T00:28:44.833Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uw80010tcdfn73k4j27",
+      "date": "2025-07-15",
+      "feature": "Front Office",
+      "jira": null,
+      "jiraUrl": null,
+      "status": "FAILED",
+      "env": "DEV",
+      "notes": "Data Alamat Kosong setelah input kedua kali",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.840Z",
+      "updatedAt": "2026-02-03T00:28:44.840Z",
+      "evidence": [
+        {
+          "id": "cml5v1uwf0012tcdfna5e6ph1",
+          "testId": "cml5v1uw80010tcdfn73k4j27",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/3755d3e9-1f69-45f1-805a-9e8a292fb047",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1uwm0014tcdfmx6qh3z4",
+        "testId": "cml5v1uw80010tcdfn73k4j27",
+        "title": "Data Alamat Kosong",
+        "content": "## Issue: Tambah Pasien - Data Alamat Kosong\n\n**Status:** 🔴 Open  \n**Environment:** Dev\n\n### Description\nCase menambahkan pasien untuk kedua kalinya setelah diisi informasi alamat dan lokasi, isinya kosong\n\n### Evidence\nhttps://jam.dev/c/3755d3e9-1f69-45f1-805a-9e8a292fb047\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Check form state management\n- [ ] Verify data persistence",
+        "createdAt": "2026-02-03T00:28:44.854Z",
+        "updatedAt": "2026-02-03T00:28:44.854Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uwt0015tcdf5rk9p5y5",
+      "date": "2026-02-02",
+      "feature": "HRIS - Pengajuan Cuti",
+      "jira": "#MD-1871",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1871",
+      "status": "PASSED",
+      "env": "PROD",
+      "notes": "Fixed - Internal Server Error resolved",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.861Z",
+      "updatedAt": "2026-02-03T00:28:44.861Z",
+      "evidence": [
+        {
+          "id": "cml5v1ux00017tcdf7uak5ol4",
+          "testId": "cml5v1uwt0015tcdf5rk9p5y5",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/4132384b-b2b0-4bf2-9c8e-ba2f674daed6",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1ux70019tcdf7sffyop1",
+        "testId": "cml5v1uwt0015tcdf5rk9p5y5",
+        "title": "Internal Server Error - Fixed",
+        "content": "## Test: Internal Server Error - Fixed\n\n**Status:** ✅ Passed  \n**Environment:** Production\n\n### Test Summary\nRetest setelah fix deployed. Internal Server Error sudah resolved.\n\n### Test Evidence\nhttps://jam.dev/c/4132384b-b2b0-4bf2-9c8e-ba2f674daed6\n\n### Result\n✅ All scenarios passed\n✅ No more errors\n✅ Tolak dari dropdown works correctly",
+        "createdAt": "2026-02-03T00:28:44.875Z",
+        "updatedAt": "2026-02-03T00:28:44.875Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uxd001atcdfjbgx5z1k",
+      "date": "2026-01-23",
+      "feature": "HRIS",
+      "jira": "#MD-1921",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1921",
+      "status": "PASSED",
+      "env": "STAGING",
+      "notes": "Jam Keluar & Auto Refresh - Fixed",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.882Z",
+      "updatedAt": "2026-02-03T00:28:44.882Z",
+      "evidence": [],
+      "detail": {
+        "id": "cml5v1uxk001ctcdfb1gmlon1",
+        "testId": "cml5v1uxd001atcdfjbgx5z1k",
+        "title": "HRIS Jam Keluar & Auto Refresh",
+        "content": "## Test: HRIS Jam Keluar & Auto Refresh\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Test Summary\nHRIS - jam keluar dan auto refresh issue sudah fixed\n\n### Result\n✅ Jam keluar works correctly\n✅ Auto refresh functioning properly",
+        "createdAt": "2026-02-03T00:28:44.889Z",
+        "updatedAt": "2026-02-03T00:28:44.889Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uxr001dtcdfcj4p21ls",
+      "date": "2026-01-21",
+      "feature": "HRIS - Presensi",
+      "jira": "#MD-1908",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1908",
+      "status": "PASSED",
+      "env": "STAGING",
+      "notes": "After NextJS Upgrade - Presensi fixed",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.896Z",
+      "updatedAt": "2026-02-03T00:28:44.896Z",
+      "evidence": [
+        {
+          "id": "cml5v1uxy001ftcdfoi6utr3f",
+          "testId": "cml5v1uxr001dtcdfcj4p21ls",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/3f9dc8c3-cb2a-43ab-85a4-7b244f92f54d",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1uy5001htcdfu3un73ie",
+        "testId": "cml5v1uxr001dtcdfcj4p21ls",
+        "title": "HRIS Presensi After NextJS Upgrade",
+        "content": "## Test: HRIS Presensi After NextJS Upgrade\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issues Fixed\n- ✅ Waktu clock in dan clock out sudah sinkron\n- ✅ Status auto refresh works\n\n### Evidence\nhttps://jam.dev/c/3f9dc8c3-cb2a-43ab-85a4-7b244f92f54d",
+        "createdAt": "2026-02-03T00:28:44.910Z",
+        "updatedAt": "2026-02-03T00:28:44.910Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uyc001itcdfojnhvk3o",
+      "date": "2026-01-21",
+      "feature": "HRIS - Cuti",
+      "jira": "#MD-1908",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1908",
+      "status": "PASSED",
+      "env": "STAGING",
+      "notes": "After NextJS Upgrade - Cuti calendar fixed",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.917Z",
+      "updatedAt": "2026-02-03T00:28:44.917Z",
+      "evidence": [
+        {
+          "id": "cml5v1uyj001ktcdfouo1j17b",
+          "testId": "cml5v1uyc001itcdfojnhvk3o",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/3cad2134-f222-4384-b9c8-5752ac336d01",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1uyp001mtcdf2vusknyc",
+        "testId": "cml5v1uyc001itcdfojnhvk3o",
+        "title": "HRIS Cuti After NextJS Upgrade",
+        "content": "## Test: HRIS Cuti After NextJS Upgrade\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issues Fixed\n- ✅ Pengajuan cuti tanggal sudah benar di kalender\n- ✅ Shift tidak muncul saat cuti\n\n### Evidence\nhttps://jam.dev/c/3cad2134-f222-4384-b9c8-5752ac336d01",
+        "createdAt": "2026-02-03T00:28:44.930Z",
+        "updatedAt": "2026-02-03T00:28:44.930Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uyw001ntcdfknlaulwa",
+      "date": "2026-01-21",
+      "feature": "HRIS - Tukar Shift",
+      "jira": "#MD-1908",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1908",
+      "status": "PASSED",
+      "env": "STAGING",
+      "notes": "After NextJS Upgrade - Validation added",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.937Z",
+      "updatedAt": "2026-02-03T00:28:44.937Z",
+      "evidence": [
+        {
+          "id": "cml5v1uz2001ptcdf2vbt15r2",
+          "testId": "cml5v1uyw001ntcdfknlaulwa",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/9ef00098-340d-4084-817a-6d8089b8760f",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1uz9001rtcdf4vjq91z4",
+        "testId": "cml5v1uyw001ntcdfknlaulwa",
+        "title": "HRIS Tukar Shift After NextJS Upgrade",
+        "content": "## Test: HRIS Tukar Shift After NextJS Upgrade\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issues Fixed\n- ✅ Validation untuk prevent overlap dengan cuti\n- ✅ Tidak bisa submit tukar shift ke tanggal cuti\n\n### Evidence\nhttps://jam.dev/c/9ef00098-340d-4084-817a-6d8089b8760f",
+        "createdAt": "2026-02-03T00:28:44.950Z",
+        "updatedAt": "2026-02-03T00:28:44.950Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1uzh001stcdfvia4nduv",
+      "date": "2026-01-29",
+      "feature": "Pembayaran Konsultasi",
+      "jira": null,
+      "jiraUrl": null,
+      "status": "PASSED",
+      "env": "STAGING",
+      "notes": "Consultation fee reset - Fixed",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.957Z",
+      "updatedAt": "2026-02-03T00:28:44.957Z",
+      "evidence": [
+        {
+          "id": "cml5v1uzn001utcdfnbfmyczi",
+          "testId": "cml5v1uzh001stcdfvia4nduv",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/72312572-d7a1-43ff-822a-7f54914abe96",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1uzu001wtcdfkz9tz9zu",
+        "testId": "cml5v1uzh001stcdfvia4nduv",
+        "title": "Pembayaran Konsultasi - Fee Reset Fixed",
+        "content": "## Test: Pembayaran Konsultasi\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issue Fixed\nConsultation fee tidak lagi reset ke 0 setelah tambah obat/tindakan\n\n### Evidence\nhttps://jam.dev/c/72312572-d7a1-43ff-822a-7f54914abe96",
+        "createdAt": "2026-02-03T00:28:44.970Z",
+        "updatedAt": "2026-02-03T00:28:44.970Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml5v1v01001xtcdfih8kty4s",
+      "date": "2026-01-28",
+      "feature": "Pembayaran Void",
+      "jira": "#MD-1900",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1900",
+      "status": "PASSED",
+      "env": "STAGING",
+      "notes": "Void calculation - Fixed",
+      "detailFile": null,
+      "createdAt": "2026-02-03T00:28:44.977Z",
+      "updatedAt": "2026-02-03T00:28:44.977Z",
+      "evidence": [
+        {
+          "id": "cml5v1v08001ztcdfxgb9bf9c",
+          "testId": "cml5v1v01001xtcdfih8kty4s",
+          "type": "jam.dev",
+          "url": "https://jam.dev/c/73e0b80d-84ba-412a-89c9-f1747cd5f71d",
+          "description": "Imported from markdown"
+        }
+      ],
+      "detail": {
+        "id": "cml5v1v0f0021tcdf40u8zzhk",
+        "testId": "cml5v1v01001xtcdfih8kty4s",
+        "title": "Pembayaran Void - Calculation Fixed",
+        "content": "## Test: Pembayaran Void\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issues Fixed\n- ✅ Total calculation correct after void\n- ✅ Tabel nominal shows correct value\n\n### Evidence\nhttps://jam.dev/c/73e0b80d-84ba-412a-89c9-f1747cd5f71d",
+        "createdAt": "2026-02-03T00:28:44.991Z",
+        "updatedAt": "2026-02-03T00:28:44.991Z"
+      },
+      "tags": []
+    },
+    {
+      "id": "cml66rmeg0000n6jcron6v2x6",
+      "date": "2026-02-03",
+      "feature": "[HRIS - Menu Shift] daftar tukar shift pada menu Shift selalu muncul berulang pada setiap minggu",
+      "jira": "none",
+      "jiraUrl": null,
+      "status": "FAILED",
+      "env": "STAGING",
+      "notes": "Issue: pada menu shift, di setiap minggu pada satu bulan, atau bahkan di bulan lainnya, selalu muncul schedule yang ada tukar shift nya, padahal tidak ada jadwal atau inisiasi untuk tukar shift pada tanggal yang seharusnya tidak muncul. \nReproduce: https://jam.dev/c/37c0dada-1888-477f-b39e-86f5098cb817 ",
+      "detailFile": "test-details/muncul-schedule-yang-ada-tukar-shift-nya,-padahal-tidak-ada-jadwal-atau-inisiasi-untuk-tukar-shift-pada-tanggal-yang-seharusnya-tidak-muncul.",
+      "createdAt": "2026-02-03T05:56:42.664Z",
+      "updatedAt": "2026-02-03T07:42:01.820Z",
+      "evidence": [],
+      "detail": {
+        "id": "cml6aj2ad0001luydsfyhz7i8",
+        "testId": "cml66rmeg0000n6jcron6v2x6",
+        "title": "muncul schedule yang ada tukar shift nya, padahal tidak ada jadwal atau inisiasi untuk tukar shift pada tanggal yang seharusnya tidak muncul.",
+        "content": "# Test Details\n\n## Test Scenario\n\nDescribe what you're testing...\n\n## Test Steps\n\n1. Step 1\n2. Step 2\n3. Step 3\n\n## Expected Results\n\nWhat should happen...\n\n## Actual Results\n\nWhat actually happened...\n\n## Evidence\n\n* Link to recording or screenshot\n\n## Root Cause\n\nAnalysis of the issue (if failed)...",
+        "createdAt": "2026-02-03T07:42:01.813Z",
+        "updatedAt": "2026-02-03T07:42:19.372Z"
+      },
+      "tags": [
+        {
+          "id": "cml66rmg50002n6jc13l4pjs9",
+          "testId": "cml66rmeg0000n6jcron6v2x6",
+          "tagId": "cml5v1sc0000411vh4k9gbll5",
+          "createdAt": "2026-02-03T05:56:42.725Z",
+          "tag": {
+            "id": "cml5v1sc0000411vh4k9gbll5",
+            "name": "critical",
+            "color": "#DC2626",
+            "category": "priority",
+            "createdAt": "2026-02-03T00:28:41.521Z"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cml90fpsp0000jh867ulwjgs8",
+      "date": "2026-02-05",
+      "feature": "[Pembayaran][Biaya Tindakan] - Tambah kolom Diskon pada menu biaya tindakan",
+      "jira": "MD-1987",
+      "jiraUrl": "https://mymedicaid.atlassian.net/browse/MD-1987",
+      "status": "FAILED",
+      "env": "STAGING",
+      "notes": null,
+      "detailFile": "test-details/test-details",
+      "createdAt": "2026-02-05T05:22:48.026Z",
+      "updatedAt": "2026-02-05T06:20:00.736Z",
+      "evidence": [
+        {
+          "id": "cml90gq4m0004jh863phsjahv",
+          "testId": "cml90fpsp0000jh867ulwjgs8",
+          "type": "link discord thread",
+          "url": "https://discordapp.com/channels/1360632998310973581/1468813876983369789",
+          "description": null
+        }
+      ],
+      "detail": {
+        "id": "cml90fpt80002jh86bq2ccehm",
+        "testId": "cml90fpsp0000jh867ulwjgs8",
+        "title": "Test Details",
+        "content": "# Test Details\n\n## Test Scenario\n\nLakukan pembayaran konsultasi dengan case berikut:\n\n* Pasien Umum - Pembayaran Konsultasi\n* Case pembayaran\n    * Tindakan: Injeksi vitamin + diskon 20.000\n    * (opsional) dengan obat + vitasprint (dengan diskon juga)\n\n## Test Steps\n\nThings to validate:\n\n* Total pembayaran dari perspektif kamu\n* Total pembayaran dari Informasi Pembayaran\n* Nominal dari tabel daftar pembayaran\n\n## Expected Results\n\nHitungan dari sistem (semua aspek) sesuai dengan referensi hitungan sendiri\n\n## Actual Results\n\nResult:\n\n* https://jam.dev/c/bd3f3ae5-80d4-4b07-9c20-0fb8d9770bf8 (pembayaran konsultasi)\n    * Total pembayaran dari hitungan sendiri: Rp 479.980\n    * Total pembayaran dari Informasi Pembayaran: Rp 459.960\n    * Total pembayaran dari billing: Rp 479.980\n    * Total pembayaran dari kwitansi: Rp 479.980\n    * Nominal dari tabel pembayaran: Rp 459.960\n* https://jam.dev/c/61b1dc42-2206-48da-8885-8bfe0043dc55 (pembayaran konsultasi tindakan only), case tindakan injeksi dengan diskon 20.000\n    * Total pembayaran dari hitungan sendiri: Rp 80.000\n    * Total pembayaran dari Informasi Pembayaran\n        * sebelum: Rp 10.000\n        * sesudah: Rp 60.000 (setelah pemilihan konsultasi)\n    * Total pembayaran dari billing: Rp 80.000\n    * Total pembayaran dari kwitansi: Rp 80.000\n    * Nominal dari tabel pembayaran \n        * sebelum bayar: Rp 10.000\n        * setelah bayar: Rp 60.000\n* https://jam.dev/c/65b97eaa-3293-42ea-956a-c88c21770c31 (pembayaran non konsultasi)",
+        "createdAt": "2026-02-05T05:22:48.044Z",
+        "updatedAt": "2026-02-05T07:34:12.958Z"
+      },
+      "tags": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "cml5v1urg0002tcdfdlxvi3mt",
+      "testId": "cml5v1ur50000tcdfpw34qiow",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/767324af-d1bb-4426-83b8-9e20965167a0",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml5v1ush0007tcdfbiucq76l",
+      "testId": "cml5v1us90005tcdf4zoidhjw",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/216b5a57-4c2c-4b38-84c6-3956915aaa67",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml5v1uvg000utcdfifk3eyxt",
+      "testId": "cml5v1uv9000stcdfyzkvq8i0",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/3f1f5e0d-1e50-418f-b3ce-f1d7303256f5",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml5v1uwf0012tcdfna5e6ph1",
+      "testId": "cml5v1uw80010tcdfn73k4j27",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/3755d3e9-1f69-45f1-805a-9e8a292fb047",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml5v1ux00017tcdf7uak5ol4",
+      "testId": "cml5v1uwt0015tcdf5rk9p5y5",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/4132384b-b2b0-4bf2-9c8e-ba2f674daed6",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml5v1uxy001ftcdfoi6utr3f",
+      "testId": "cml5v1uxr001dtcdfcj4p21ls",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/3f9dc8c3-cb2a-43ab-85a4-7b244f92f54d",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml5v1uyj001ktcdfouo1j17b",
+      "testId": "cml5v1uyc001itcdfojnhvk3o",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/3cad2134-f222-4384-b9c8-5752ac336d01",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml5v1uz2001ptcdf2vbt15r2",
+      "testId": "cml5v1uyw001ntcdfknlaulwa",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/9ef00098-340d-4084-817a-6d8089b8760f",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml5v1uzn001utcdfnbfmyczi",
+      "testId": "cml5v1uzh001stcdfvia4nduv",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/72312572-d7a1-43ff-822a-7f54914abe96",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml5v1v08001ztcdfxgb9bf9c",
+      "testId": "cml5v1v01001xtcdfih8kty4s",
+      "type": "jam.dev",
+      "url": "https://jam.dev/c/73e0b80d-84ba-412a-89c9-f1747cd5f71d",
+      "description": "Imported from markdown"
+    },
+    {
+      "id": "cml90gq4m0004jh863phsjahv",
+      "testId": "cml90fpsp0000jh867ulwjgs8",
+      "type": "link discord thread",
+      "url": "https://discordapp.com/channels/1360632998310973581/1468813876983369789",
+      "description": null
+    }
+  ],
+  "details": [
+    {
+      "id": "cml5v1us10004tcdftzl9iecs",
+      "testId": "cml5v1ur50000tcdfpw34qiow",
+      "title": "Internal Server Error & Date Mismatch",
+      "content": "## Issue #1: Internal Server Error\n\n**Severity:** High\n\n### Issue Summary\nInternal Server Error terjadi saat menolak pengajuan cuti dari dropdown di halaman list, tetapi berhasil setelah membuka detail terlebih dahulu.\n\n### Steps to Reproduce\n1. Login sebagai admin/approver\n2. Buka halaman **Pengajuan Cuti** (list view)\n3. Klik dropdown action pada salah satu pengajuan\n4. Pilih **\"Tolak\"** langsung dari dropdown\n\n### Expected Result\n- Pengajuan berhasil ditolak\n- Status berubah menjadi \"Ditolak\"\n- Tidak ada error\n\n### Actual Result\n- **Internal Server Error** muncul\n- Pengajuan tidak ditolak\n- User harus buka detail dulu baru bisa tolak\n\n### Test Evidence\n- Validasi #1: Tolak dari Detail → ✅ Berhasil\n- Validasi #2: Buka Detail Dulu → ✅ Berhasil\n- Validasi #3: Langsung dari Dropdown → ❌ Error\n\n## Issue #2: Date Mismatch\n\n**Severity:** Minor\n\n### Issue Summary\nTanggal pengajuan cuti yang ditampilkan berbeda antara HRIS mobile dan Web Admin.\n\n**Example:**\n- HRIS Mobile: `2 Februari - 2 Februari`\n- Web Admin: `2 Februari - 3 Februari`\n\nTanggal akhir di Web Admin lebih 1 hari dari yang seharusnya.",
+      "createdAt": "2026-02-03T00:28:44.689Z",
+      "updatedAt": "2026-02-03T00:28:44.689Z"
+    },
+    {
+      "id": "cml5v1uso0009tcdf9gec209k",
+      "testId": "cml5v1us90005tcdf4zoidhjw",
+      "title": "Data Pasien Mismatch",
+      "content": "## Issue: Data Pasien Mismatch\n\n**Status:** 🟡 In Progress  \n**Environment:** Staging\n\n### Issue Summary\nRegression test pada `Cetak Detail Resep`, ada data pasien mismatch:\n- Nomor telepon pasien salah\n- Berat/tinggi pasien (tinggi badan salah)\n\n### Next Steps\n- [ ] Report to dev team\n- [ ] Create Jira ticket\n- [ ] Retest after fix",
+      "createdAt": "2026-02-03T00:28:44.712Z",
+      "updatedAt": "2026-02-03T00:28:44.712Z"
+    },
+    {
+      "id": "cml5v1ut5000ctcdf99o09rla",
+      "testId": "cml5v1usv000atcdfg8n62unh",
+      "title": "Tambah Personil Issues",
+      "content": "## Issue: Tambah Personil\n\n**Status:** 🟡 In Progress  \n**Environment:** Staging\n\n### Positive Tests (✅ Passed)\n- Admin role\n- Kasir role\n- Front Office role\n\n### Issues Found\n- ❌ Double success alert/notification\n- ❌ Data pengisian `Jadwal Pembayaran` tidak tersimpan\n- ❌ Dibutuhkan error handler atau alert dari sisi FE\n\n### Next Steps\n- [ ] Report UI issues (double alert)\n- [ ] Report data persistence issue (Jadwal Pembayaran)\n- [ ] Request FE error handler improvement\n- [ ] Retest after fixes",
+      "createdAt": "2026-02-03T00:28:44.730Z",
+      "updatedAt": "2026-02-03T00:28:44.730Z"
+    },
+    {
+      "id": "cml5v1utk000ftcdf43aqxfa1",
+      "testId": "cml5v1utc000dtcdf2dhkehz3",
+      "title": "Confirmation Modal Error",
+      "content": "## Issue: Confirmation Modal Error\n\n**Status:** 🔴 Open  \n**Feature:** General UI  \n**First Found:** 2025-12\n\n### Description\nModal konfirmasi menampilkan error atau tidak muncul dengan benar\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Get detailed reproduction steps\n- [ ] Verify fix",
+      "createdAt": "2026-02-03T00:28:44.744Z",
+      "updatedAt": "2026-02-03T00:28:44.744Z"
+    },
+    {
+      "id": "cml5v1uty000itcdfwv4thz3j",
+      "testId": "cml5v1utr000gtcdfby9ggomz",
+      "title": "Toast Double",
+      "content": "## Issue: Toast Double\n\n**Status:** 🔴 Open  \n**Feature:** General UI  \n**First Found:** 2025-12\n\n### Description\nToast notification muncul dua kali untuk satu action\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Identify root cause\n- [ ] Verify fix doesn't break other notifications",
+      "createdAt": "2026-02-03T00:28:44.758Z",
+      "updatedAt": "2026-02-03T00:28:44.758Z"
+    },
+    {
+      "id": "cml5v1uub000ltcdf0a3yyx7s",
+      "testId": "cml5v1uu4000jtcdfo08a4xgk",
+      "title": "Login Redirect Issue",
+      "content": "## Issue: HRIS Login Redirect\n\n**Status:** 🔴 Open  \n**Feature:** HRIS  \n**First Found:** 2025-12\n\n### Description\nSetelah login HRIS, redirect tidak berfungsi dengan benar\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Check routing configuration\n- [ ] Verify authentication flow",
+      "createdAt": "2026-02-03T00:28:44.771Z",
+      "updatedAt": "2026-02-03T00:28:44.771Z"
+    },
+    {
+      "id": "cml5v1uup000otcdf24oh1a3z",
+      "testId": "cml5v1uui000mtcdfgiv26nw2",
+      "title": "Presensi Error",
+      "content": "## Issue: HRIS Presensi Error\n\n**Status:** 🔴 Open  \n**Feature:** HRIS  \n**First Found:** 2025-12\n\n### Description\nError saat melakukan presensi di HRIS\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Get error logs\n- [ ] Identify specific error scenario",
+      "createdAt": "2026-02-03T00:28:44.785Z",
+      "updatedAt": "2026-02-03T00:28:44.785Z"
+    },
+    {
+      "id": "cml5v1uv3000rtcdf7wk5mdrw",
+      "testId": "cml5v1uuv000ptcdfgma30och",
+      "title": "Portal UI Fixes",
+      "content": "## Issue: Portal UI Fixes\n\n**Status:** 🟡 In Progress  \n**Feature:** Portal  \n**First Found:** 2025-12\n\n### Description\nVarious UI fixes untuk portal\n\n### Next Steps\n- [ ] Review UI fix list\n- [ ] Test each fix individually\n- [ ] Verify no regression",
+      "createdAt": "2026-02-03T00:28:44.799Z",
+      "updatedAt": "2026-02-03T00:28:44.799Z"
+    },
+    {
+      "id": "cml5v1uvn000wtcdfuzlxgmxh",
+      "testId": "cml5v1uv9000stcdfyzkvq8i0",
+      "title": "SOAP Apoteker - Data Alergi Issue",
+      "content": "## Issue: SOAP Apoteker - Data Alergi\n\n**Status:** 🔴 Open  \n**Jira:** MD-844  \n**Environment:** Dev\n\n### Description\n- Data alergi tidak sinkron dengan riwayat alergi pasien\n- Tidak bisa menambah atau mengubah data alergi di form SOAP Apoteker\n\n### Evidence\nhttps://jam.dev/c/3f1f5e0d-1e50-418f-b3ce-f1d7303256f5\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Verify data sync mechanism\n- [ ] Test add/edit functionality",
+      "createdAt": "2026-02-03T00:28:44.819Z",
+      "updatedAt": "2026-02-03T00:28:44.819Z"
+    },
+    {
+      "id": "cml5v1uw1000ztcdffm89d3tx",
+      "testId": "cml5v1uvu000xtcdfddqd10o4",
+      "title": "Dropdown Issue",
+      "content": "## Issue: Pelayanan Resep - Dropdown\n\n**Status:** 🔴 Open  \n**Environment:** Dev\n\n### Description\nDropdown terkadang \"mental\" (tidak stabil)\n\n### Next Steps\n- [ ] Identify specific dropdown\n- [ ] Get reproduction steps\n- [ ] Test on different browsers",
+      "createdAt": "2026-02-03T00:28:44.833Z",
+      "updatedAt": "2026-02-03T00:28:44.833Z"
+    },
+    {
+      "id": "cml5v1uwm0014tcdfmx6qh3z4",
+      "testId": "cml5v1uw80010tcdfn73k4j27",
+      "title": "Data Alamat Kosong",
+      "content": "## Issue: Tambah Pasien - Data Alamat Kosong\n\n**Status:** 🔴 Open  \n**Environment:** Dev\n\n### Description\nCase menambahkan pasien untuk kedua kalinya setelah diisi informasi alamat dan lokasi, isinya kosong\n\n### Evidence\nhttps://jam.dev/c/3755d3e9-1f69-45f1-805a-9e8a292fb047\n\n### Next Steps\n- [ ] Retest in 2026\n- [ ] Check form state management\n- [ ] Verify data persistence",
+      "createdAt": "2026-02-03T00:28:44.854Z",
+      "updatedAt": "2026-02-03T00:28:44.854Z"
+    },
+    {
+      "id": "cml5v1ux70019tcdf7sffyop1",
+      "testId": "cml5v1uwt0015tcdf5rk9p5y5",
+      "title": "Internal Server Error - Fixed",
+      "content": "## Test: Internal Server Error - Fixed\n\n**Status:** ✅ Passed  \n**Environment:** Production\n\n### Test Summary\nRetest setelah fix deployed. Internal Server Error sudah resolved.\n\n### Test Evidence\nhttps://jam.dev/c/4132384b-b2b0-4bf2-9c8e-ba2f674daed6\n\n### Result\n✅ All scenarios passed\n✅ No more errors\n✅ Tolak dari dropdown works correctly",
+      "createdAt": "2026-02-03T00:28:44.875Z",
+      "updatedAt": "2026-02-03T00:28:44.875Z"
+    },
+    {
+      "id": "cml5v1uxk001ctcdfb1gmlon1",
+      "testId": "cml5v1uxd001atcdfjbgx5z1k",
+      "title": "HRIS Jam Keluar & Auto Refresh",
+      "content": "## Test: HRIS Jam Keluar & Auto Refresh\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Test Summary\nHRIS - jam keluar dan auto refresh issue sudah fixed\n\n### Result\n✅ Jam keluar works correctly\n✅ Auto refresh functioning properly",
+      "createdAt": "2026-02-03T00:28:44.889Z",
+      "updatedAt": "2026-02-03T00:28:44.889Z"
+    },
+    {
+      "id": "cml5v1uy5001htcdfu3un73ie",
+      "testId": "cml5v1uxr001dtcdfcj4p21ls",
+      "title": "HRIS Presensi After NextJS Upgrade",
+      "content": "## Test: HRIS Presensi After NextJS Upgrade\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issues Fixed\n- ✅ Waktu clock in dan clock out sudah sinkron\n- ✅ Status auto refresh works\n\n### Evidence\nhttps://jam.dev/c/3f9dc8c3-cb2a-43ab-85a4-7b244f92f54d",
+      "createdAt": "2026-02-03T00:28:44.910Z",
+      "updatedAt": "2026-02-03T00:28:44.910Z"
+    },
+    {
+      "id": "cml5v1uyp001mtcdf2vusknyc",
+      "testId": "cml5v1uyc001itcdfojnhvk3o",
+      "title": "HRIS Cuti After NextJS Upgrade",
+      "content": "## Test: HRIS Cuti After NextJS Upgrade\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issues Fixed\n- ✅ Pengajuan cuti tanggal sudah benar di kalender\n- ✅ Shift tidak muncul saat cuti\n\n### Evidence\nhttps://jam.dev/c/3cad2134-f222-4384-b9c8-5752ac336d01",
+      "createdAt": "2026-02-03T00:28:44.930Z",
+      "updatedAt": "2026-02-03T00:28:44.930Z"
+    },
+    {
+      "id": "cml5v1uz9001rtcdf4vjq91z4",
+      "testId": "cml5v1uyw001ntcdfknlaulwa",
+      "title": "HRIS Tukar Shift After NextJS Upgrade",
+      "content": "## Test: HRIS Tukar Shift After NextJS Upgrade\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issues Fixed\n- ✅ Validation untuk prevent overlap dengan cuti\n- ✅ Tidak bisa submit tukar shift ke tanggal cuti\n\n### Evidence\nhttps://jam.dev/c/9ef00098-340d-4084-817a-6d8089b8760f",
+      "createdAt": "2026-02-03T00:28:44.950Z",
+      "updatedAt": "2026-02-03T00:28:44.950Z"
+    },
+    {
+      "id": "cml5v1uzu001wtcdfkz9tz9zu",
+      "testId": "cml5v1uzh001stcdfvia4nduv",
+      "title": "Pembayaran Konsultasi - Fee Reset Fixed",
+      "content": "## Test: Pembayaran Konsultasi\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issue Fixed\nConsultation fee tidak lagi reset ke 0 setelah tambah obat/tindakan\n\n### Evidence\nhttps://jam.dev/c/72312572-d7a1-43ff-822a-7f54914abe96",
+      "createdAt": "2026-02-03T00:28:44.970Z",
+      "updatedAt": "2026-02-03T00:28:44.970Z"
+    },
+    {
+      "id": "cml5v1v0f0021tcdf40u8zzhk",
+      "testId": "cml5v1v01001xtcdfih8kty4s",
+      "title": "Pembayaran Void - Calculation Fixed",
+      "content": "## Test: Pembayaran Void\n\n**Status:** ✅ Passed  \n**Environment:** Staging\n\n### Issues Fixed\n- ✅ Total calculation correct after void\n- ✅ Tabel nominal shows correct value\n\n### Evidence\nhttps://jam.dev/c/73e0b80d-84ba-412a-89c9-f1747cd5f71d",
+      "createdAt": "2026-02-03T00:28:44.991Z",
+      "updatedAt": "2026-02-03T00:28:44.991Z"
+    },
+    {
+      "id": "cml6aj2ad0001luydsfyhz7i8",
+      "testId": "cml66rmeg0000n6jcron6v2x6",
+      "title": "muncul schedule yang ada tukar shift nya, padahal tidak ada jadwal atau inisiasi untuk tukar shift pada tanggal yang seharusnya tidak muncul.",
+      "content": "# Test Details\n\n## Test Scenario\n\nDescribe what you're testing...\n\n## Test Steps\n\n1. Step 1\n2. Step 2\n3. Step 3\n\n## Expected Results\n\nWhat should happen...\n\n## Actual Results\n\nWhat actually happened...\n\n## Evidence\n\n* Link to recording or screenshot\n\n## Root Cause\n\nAnalysis of the issue (if failed)...",
+      "createdAt": "2026-02-03T07:42:01.813Z",
+      "updatedAt": "2026-02-03T07:42:19.372Z"
+    },
+    {
+      "id": "cml90fpt80002jh86bq2ccehm",
+      "testId": "cml90fpsp0000jh867ulwjgs8",
+      "title": "Test Details",
+      "content": "# Test Details\n\n## Test Scenario\n\nLakukan pembayaran konsultasi dengan case berikut:\n\n* Pasien Umum - Pembayaran Konsultasi\n* Case pembayaran\n    * Tindakan: Injeksi vitamin + diskon 20.000\n    * (opsional) dengan obat + vitasprint (dengan diskon juga)\n\n## Test Steps\n\nThings to validate:\n\n* Total pembayaran dari perspektif kamu\n* Total pembayaran dari Informasi Pembayaran\n* Nominal dari tabel daftar pembayaran\n\n## Expected Results\n\nHitungan dari sistem (semua aspek) sesuai dengan referensi hitungan sendiri\n\n## Actual Results\n\nResult:\n\n* https://jam.dev/c/bd3f3ae5-80d4-4b07-9c20-0fb8d9770bf8 (pembayaran konsultasi)\n    * Total pembayaran dari hitungan sendiri: Rp 479.980\n    * Total pembayaran dari Informasi Pembayaran: Rp 459.960\n    * Total pembayaran dari billing: Rp 479.980\n    * Total pembayaran dari kwitansi: Rp 479.980\n    * Nominal dari tabel pembayaran: Rp 459.960\n* https://jam.dev/c/61b1dc42-2206-48da-8885-8bfe0043dc55 (pembayaran konsultasi tindakan only), case tindakan injeksi dengan diskon 20.000\n    * Total pembayaran dari hitungan sendiri: Rp 80.000\n    * Total pembayaran dari Informasi Pembayaran\n        * sebelum: Rp 10.000\n        * sesudah: Rp 60.000 (setelah pemilihan konsultasi)\n    * Total pembayaran dari billing: Rp 80.000\n    * Total pembayaran dari kwitansi: Rp 80.000\n    * Nominal dari tabel pembayaran \n        * sebelum bayar: Rp 10.000\n        * setelah bayar: Rp 60.000\n* https://jam.dev/c/65b97eaa-3293-42ea-956a-c88c21770c31 (pembayaran non konsultasi)",
+      "createdAt": "2026-02-05T05:22:48.044Z",
+      "updatedAt": "2026-02-05T07:34:12.958Z"
+    }
+  ],
+  "tags": [
+    {
+      "id": "cml5v1sas000011vh3r43u4l7",
+      "name": "regression",
+      "color": "#EF4444",
+      "category": "test-type",
+      "createdAt": "2026-02-03T00:28:41.477Z"
+    },
+    {
+      "id": "cml5v1sbd000111vht39dlofe",
+      "name": "positive-case",
+      "color": "#10B981",
+      "category": "test-type",
+      "createdAt": "2026-02-03T00:28:41.497Z"
+    },
+    {
+      "id": "cml5v1sbn000211vhydr2e9av",
+      "name": "negative-case",
+      "color": "#F59E0B",
+      "category": "test-type",
+      "createdAt": "2026-02-03T00:28:41.507Z"
+    },
+    {
+      "id": "cml5v1sbu000311vhvpos2jhj",
+      "name": "edge-case",
+      "color": "#8B5CF6",
+      "category": "test-type",
+      "createdAt": "2026-02-03T00:28:41.515Z"
+    },
+    {
+      "id": "cml5v1sc0000411vh4k9gbll5",
+      "name": "critical",
+      "color": "#DC2626",
+      "category": "priority",
+      "createdAt": "2026-02-03T00:28:41.521Z"
+    },
+    {
+      "id": "cml5v1sc6000511vhezsiberz",
+      "name": "high",
+      "color": "#F59E0B",
+      "category": "priority",
+      "createdAt": "2026-02-03T00:28:41.527Z"
+    },
+    {
+      "id": "cml5v1scc000611vhhuro5cl8",
+      "name": "medium",
+      "color": "#3B82F6",
+      "category": "priority",
+      "createdAt": "2026-02-03T00:28:41.533Z"
+    },
+    {
+      "id": "cml5v1scj000711vh6da4qo48",
+      "name": "low",
+      "color": "#6B7280",
+      "category": "priority",
+      "createdAt": "2026-02-03T00:28:41.539Z"
+    },
+    {
+      "id": "cml5v1scp000811vhiu2btrnb",
+      "name": "authentication",
+      "color": "#06B6D4",
+      "category": "feature",
+      "createdAt": "2026-02-03T00:28:41.545Z"
+    },
+    {
+      "id": "cml5v1scv000911vh0s2nwksj",
+      "name": "api",
+      "color": "#8B5CF6",
+      "category": "feature",
+      "createdAt": "2026-02-03T00:28:41.552Z"
+    },
+    {
+      "id": "cml5v1sd2000a11vh63s16s4n",
+      "name": "ui",
+      "color": "#EC4899",
+      "category": "feature",
+      "createdAt": "2026-02-03T00:28:41.558Z"
+    },
+    {
+      "id": "cml5v1sd8000b11vh5vekwl3d",
+      "name": "database",
+      "color": "#14B8A6",
+      "category": "feature",
+      "createdAt": "2026-02-03T00:28:41.565Z"
+    }
+  ],
+  "testTags": [
+    {
+      "id": "cml5vl6ll0001nlqm86uxmjmz",
+      "testId": "cml5v1ur50000tcdfpw34qiow",
+      "tagId": "cml5v1scv000911vh0s2nwksj",
+      "createdAt": "2026-02-03T00:43:46.473Z"
+    },
+    {
+      "id": "cml66rmg50002n6jc13l4pjs9",
+      "testId": "cml66rmeg0000n6jcron6v2x6",
+      "tagId": "cml5v1sc0000411vh4k9gbll5",
+      "createdAt": "2026-02-03T05:56:42.725Z"
+    }
+  ]
+}
