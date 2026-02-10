@@ -121,7 +121,7 @@
     </div>
 
     <!-- Tests Table -->
-    <div v-else class="bg-white rounded-lg shadow overflow-hidden">
+    <div v-else class="bg-white rounded-lg shadow overflow-x-auto">
       <div v-if="tests.length === 0" class="text-center py-12">
         <div class="text-4xl mb-4">📋</div>
         <p class="text-gray-600">No tests found. Create your first test!</p>
@@ -130,19 +130,19 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                 Date
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Feature
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                 Jira
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                 Status
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                 Env
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -151,7 +151,7 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Notes
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap w-32">
                 Actions
               </th>
             </tr>
@@ -166,8 +166,10 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ test.date }}
               </td>
-              <td class="px-6 py-4 text-sm text-gray-900">
-                {{ test.feature }}
+              <td class="px-6 py-4 text-sm text-gray-900 max-w-xs">
+                <div class="truncate" :title="test.feature">
+                  {{ test.feature }}
+                </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <a
@@ -191,7 +193,7 @@
                   {{ test.env }}
                 </span>
               </td>
-              <td class="px-6 py-4">
+              <td class="px-6 py-4 max-w-xs">
                 <div class="flex flex-wrap gap-1">
                   <TagBadge
                     v-for="testTag in test.tags"
@@ -201,28 +203,30 @@
                   <span v-if="!test.tags || test.tags.length === 0" class="text-gray-400 text-sm">-</span>
                 </div>
               </td>
-              <td class="px-6 py-4 text-sm text-gray-600">
-                <span v-if="test.detail" class="truncate max-w-xs block" :title="test.detail.title">
+              <td class="px-6 py-4 text-sm text-gray-600 max-w-xs">
+                <div v-if="test.detail" class="truncate" :title="test.detail.title">
                   {{ test.detail.title }}
-                </span>
-                <span v-else-if="test.notes" class="truncate max-w-xs block" :title="test.notes">
+                </div>
+                <div v-else-if="test.notes" class="truncate" :title="test.notes">
                   {{ test.notes }}
-                </span>
+                </div>
                 <span v-else class="text-gray-400">-</span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button
-                  @click.stop="$router.push(`/tests/${test.id}/edit`)"
-                  class="text-blue-600 hover:text-blue-900 mr-3"
-                >
-                  Edit
-                </button>
-                <button
-                  @click.stop="handleDelete(test.id)"
-                  class="text-red-600 hover:text-red-900"
-                >
-                  Delete
-                </button>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
+                <div class="flex items-center justify-end gap-2">
+                  <button
+                    @click.stop="$router.push(`/tests/${test.id}/edit`)"
+                    class="text-blue-600 hover:text-blue-900"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    @click.stop="handleDelete(test.id)"
+                    class="text-red-600 hover:text-red-900"
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
