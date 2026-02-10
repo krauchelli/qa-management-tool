@@ -33,6 +33,26 @@ const router = createRouter({
       name: 'Tags',
       component: () => import('../views/TagsView.vue'),
     },
+    {
+      path: '/test-cases',
+      name: 'TestCaseLibrary',
+      component: () => import('../views/TestCaseLibraryView.vue'),
+    },
+    {
+      path: '/test-cases/new',
+      name: 'NewTestCase',
+      component: () => import('../views/TestCaseFormView.vue'),
+    },
+    {
+      path: '/test-cases/:id',
+      name: 'TestCaseDetail',
+      component: () => import('../views/TestCaseDetailView.vue'),
+    },
+    {
+      path: '/test-cases/:id/edit',
+      name: 'EditTestCase',
+      component: () => import('../views/TestCaseFormView.vue'),
+    },
   ],
 });
 

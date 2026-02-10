@@ -24,6 +24,13 @@
                 Tests
               </router-link>
               <router-link
+                to="/test-cases"
+                class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
+                active-class="bg-gray-100"
+              >
+                Test Cases
+              </router-link>
+              <router-link
                 to="/tags"
                 class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
                 active-class="bg-gray-100"
