@@ -19,16 +19,19 @@ model Test {
   env         String      // "DEV", "STAGING", "PROD"
   notes       String?
   detailFile  String?     // Path like "test-details/ongoing-february-2026"
+  testCaseId  String?     // Reference to test case (optional)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   
   evidence    Evidence[]
   detail      Detail?
   tags        TestTag[]
+  testCase    TestCase?   @relation(fields: [testCaseId], references: [id], onDelete: SetNull)
   
   @@index([date])
   @@index([status])
   @@index([feature])
+  @@index([testCaseId])
 }
 
 model Evidence {
@@ -62,6 +65,7 @@ model Tag {
   createdAt   DateTime  @default(now())
   
   tests       TestTag[]
+  testCases   TestCaseTag[]
   
   @@index([name])
 }
@@ -77,5 +81,36 @@ model TestTag {
   
   @@unique([testId, tagId])
   @@index([testId])
+  @@index([tagId])
+}
+
+model TestCase {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  steps       String    // Markdown format
+  expected    String    // Expected results (markdown)
+  priority    String    @default("MEDIUM")  // LOW, MEDIUM, HIGH, CRITICAL
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  tags        TestCaseTag[]
+  executions  Test[]
+  
+  @@index([title])
+  @@index([priority])
+}
+
+model TestCaseTag {
+  id          String   @id @default(cuid())
+  testCaseId  String
+  tagId       String
+  createdAt   DateTime @default(now())
+  
+  testCase    TestCase @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  tag         Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@unique([testCaseId, tagId])
+  @@index([testCaseId])
   @@index([tagId])
 }
