@@ -5,6 +5,7 @@ import testsRoutes from './routes/tests.routes';
 import detailsRoutes from './routes/details.routes';
 import statsRoutes from './routes/stats.routes';
 import tagsRoutes from './routes/tags.routes';
+import testCaseRoutes from './routes/testCase.routes';
 
 // Load environment variables
 dotenv.config();
@@ -31,6 +32,7 @@ app.get('/api', (req, res) => {
     message: 'QA Management Tool API v2.0',
     endpoints: {
       tests: '/api/tests',
+      testCases: '/api/test-cases',
       details: '/api/details',
       stats: '/api/stats',
       tags: '/api/tags',
@@ -39,6 +41,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api/tests', testsRoutes);
+app.use('/api/test-cases', testCaseRoutes);
 app.use('/api/details', detailsRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/tags', tagsRoutes);
