@@ -11,14 +11,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Check Environment
         run: |
-          echo "🔍 Checking environment..."
+          echo "🔍 Environment Info:"
           echo "Node version: $(node --version)"
           echo "NPM version: $(npm --version)"
-          echo "NVM version: $(nvm --version 2>/dev/null || echo 'not installed')"
           echo "PM2 installed: $(command -v pm2 &> /dev/null && echo 'yes' || echo 'no')"
-          echo "Working directory: $(pwd)"
 
       - name: Install Dependencies
         run: |
@@ -52,7 +55,7 @@ jobs:
       - name: Install PM2 if needed
         run: |
           if ! command -v pm2 &> /dev/null; then
-            echo "� Installinsg PM2..."
+            echo "📦 Installing PM2..."
             npm install -g pm2
           else
             echo "✅ PM2 already installed: $(pm2 --version)"
@@ -62,33 +65,28 @@ jobs:
         run: |
           echo "🔄 Restarting services..."
           
-          # Stop and delete old processes
           pm2 stop qa-tool-backend || true
           pm2 stop qa-tool-frontend || true
           pm2 delete qa-tool-backend || true
           pm2 delete qa-tool-frontend || true
           
-          # Start backend (port 3000)
           cd backend
           pm2 start npm --name "qa-tool-backend" --interpreter none -- start
           cd ..
           
-          # Start frontend preview server (port 5174)
           cd frontend
           pm2 start npm --name "qa-tool-frontend" --interpreter none -- run preview -- --port 5174 --host
           cd ..
           
-          # Save PM2 configuration
           pm2 save
 
-      - name: Show Deployment Status
+      - name: Show Status
         run: |
           echo ""
           echo "✅ Deployment Complete!"
           echo ""
-          echo "📊 PM2 Status:"
           pm2 list
           echo ""
-          echo "🌐 Access URLs:"
+          echo "🌐 Access:"
           echo "   Frontend: http://$(hostname -I | awk '{print $1}'):5174"
           echo "   Backend:  http://$(hostname -I | awk '{print $1}'):3000"
