@@ -30,20 +30,6 @@ jobs:
           cd backend && npm install && cd ..
           cd frontend && npm install && cd ..
 
-      - name: Build Frontend
-        run: |
-          echo "🏗️ Building frontend..."
-          cd frontend
-          npm run build
-          cd ..
-
-      - name: Build Backend
-        run: |
-          echo "🏗️ Building backend..."
-          cd backend
-          npm run build
-          cd ..
-
       - name: Setup Database
         run: |
           echo "🗄️ Setting up database..."
@@ -61,21 +47,23 @@ jobs:
             echo "✅ PM2 already installed: $(pm2 --version)"
           fi
 
-      - name: Restart with PM2
+      - name: Restart with PM2 (Dev Mode)
         run: |
-          echo "🔄 Restarting services..."
+          echo "� Restarting services in DEV mode..."
           
           pm2 stop qa-tool-backend || true
           pm2 stop qa-tool-frontend || true
           pm2 delete qa-tool-backend || true
           pm2 delete qa-tool-frontend || true
           
+          # Backend dev mode (hot reload)
           cd backend
-          pm2 start npm --name "qa-tool-backend" --interpreter none -- start
+          pm2 start npm --name "qa-tool-backend" --interpreter none -- run dev
           cd ..
           
+          # Frontend dev mode (Vite dev server)
           cd frontend
-          pm2 start npm --name "qa-tool-frontend" --interpreter none -- run preview -- --port 5174 --host
+          pm2 start npm --name "qa-tool-frontend" --interpreter none -- run dev -- --host
           cd ..
           
           pm2 save
@@ -83,10 +71,12 @@ jobs:
       - name: Show Status
         run: |
           echo ""
-          echo "✅ Deployment Complete!"
+          echo "✅ Deployment Complete (DEV MODE)!"
           echo ""
           pm2 list
           echo ""
           echo "🌐 Access:"
-          echo "   Frontend: http://$(hostname -I | awk '{print $1}'):5174"
+          echo "   Frontend: http://$(hostname -I | awk '{print $1}'):5173"
           echo "   Backend:  http://$(hostname -I | awk '{print $1}'):3000"
+          echo ""
+          echo "💡 Running in development mode with hot reload"
