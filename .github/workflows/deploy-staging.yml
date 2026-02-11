@@ -11,72 +11,49 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Check Environment
         run: |
           echo "🔍 Environment Info:"
-          echo "Node version: $(node --version)"
-          echo "NPM version: $(npm --version)"
-          echo "PM2 installed: $(command -v pm2 &> /dev/null && echo 'yes' || echo 'no')"
+          echo "Docker version: $(docker --version)"
+          echo "Docker Compose version: $(docker-compose --version)"
 
-      - name: Install Dependencies
+      - name: Stop Old Containers
         run: |
-          echo "📦 Installing dependencies..."
-          npm install
-          cd backend && npm install && cd ..
-          cd frontend && npm install && cd ..
+          docker-compose -f docker-compose.staging.yml down || true
 
-      - name: Setup Database
+      - name: Build and Start Services
         run: |
-          echo "🗄️ Setting up database..."
-          cd backend
-          npx prisma generate
-          npx prisma migrate deploy || npx prisma db push
-          cd ..
+          echo "🏗️ Building and starting services..."
+          docker-compose -f docker-compose.staging.yml build
+          docker-compose -f docker-compose.staging.yml up -d
 
-      - name: Install PM2 if needed
+      - name: Wait for Services
         run: |
-          if ! command -v pm2 &> /dev/null; then
-            echo "📦 Installing PM2..."
-            npm install -g pm2
+          echo "⏳ Waiting for services to start..."
+          sleep 10
+
+      - name: Check Import Script
+        run: |
+          echo "📋 Checking if import script exists..."
+          if docker exec qa-tool-backend-staging test -f "scripts/import-from-markdown.ts"; then
+            echo "✅ Import script found"
+            echo "💡 To import data, run: docker exec qa-tool-backend-staging npm run import"
           else
-            echo "✅ PM2 already installed: $(pm2 --version)"
+            echo "⚠️  Import script not found"
           fi
-
-      - name: Restart with PM2 (Dev Mode)
-        run: |
-          echo "� Restarting services in DEV mode..."
-          
-          pm2 stop qa-tool-backend || true
-          pm2 stop qa-tool-frontend || true
-          pm2 delete qa-tool-backend || true
-          pm2 delete qa-tool-frontend || true
-          
-          # Backend dev mode (hot reload)
-          cd backend
-          pm2 start npm --name "qa-tool-backend" --interpreter none -- run dev
-          cd ..
-          
-          # Frontend dev mode (Vite dev server)
-          cd frontend
-          pm2 start npm --name "qa-tool-frontend" --interpreter none -- run dev -- --host
-          cd ..
-          
-          pm2 save
 
       - name: Show Status
         run: |
           echo ""
-          echo "✅ Deployment Complete (DEV MODE)!"
+          echo "✅ Deployment Complete (DEV MODE with Docker)!"
           echo ""
-          pm2 list
+          docker-compose -f docker-compose.staging.yml ps
           echo ""
           echo "🌐 Access:"
           echo "   Frontend: http://$(hostname -I | awk '{print $1}'):5173"
           echo "   Backend:  http://$(hostname -I | awk '{print $1}'):3000"
           echo ""
-          echo "💡 Running in development mode with hot reload"
+          echo "📋 Useful commands:"
+          echo "   docker-compose -f docker-compose.staging.yml logs -f"
+          echo "   docker-compose -f docker-compose.staging.yml restart"
+          echo "   docker exec qa-tool-backend-staging npm run import"
