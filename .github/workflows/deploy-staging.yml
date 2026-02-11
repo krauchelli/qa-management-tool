@@ -1,0 +1,98 @@
+name: Deploy to Staging Server
+on:
+  push:
+    branches: [ staging ]  # Triggers on push to staging branch
+
+jobs:
+  deploy:
+    runs-on: self-hosted  # Your fedora runner
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: |
+          echo "📦 Installing dependencies..."
+          npm install
+          cd backend && npm install && cd ..
+          cd frontend && npm install && cd ..
+
+      - name: Build Frontend
+        run: |
+          echo "🏗️ Building frontend..."
+          cd frontend
+          npm run build
+          cd ..
+
+      - name: Build Backend
+        run: |
+          echo "🏗️ Building backend..."
+          cd backend
+          npm run build
+          cd ..
+
+      - name: Setup Database
+        run: |
+          echo "🗄️ Setting up database..."
+          cd backend
+          
+          # Generate Prisma client
+          npx prisma generate
+          
+          # Run migrations (keeps existing data)
+          npx prisma migrate deploy || npx prisma db push
+          
+          cd ..
+
+      - name: Restart with PM2
+        run: |
+          echo "🔄 Restarting services..."
+          
+          # Install PM2 globally if not installed
+          command -v pm2 >/dev/null 2>&1 || npm install -g pm2
+          
+          # Stop and delete old processes
+          pm2 stop qa-tool-backend || true
+          pm2 stop qa-tool-frontend || true
+          pm2 delete qa-tool-backend || true
+          pm2 delete qa-tool-frontend || true
+          
+          # Start backend (port 3000)
+          cd backend
+          pm2 start npm --name "qa-tool-backend" -- start
+          cd ..
+          
+          # Start frontend preview server (port 5174)
+          cd frontend
+          pm2 start npm --name "qa-tool-frontend" -- run preview -- --port 5174 --host
+          cd ..
+          
+          # Save PM2 configuration
+          pm2 save
+          
+          # Setup PM2 startup (optional, for server reboot)
+          pm2 startup || true
+
+      - name: Show Deployment Status
+        run: |
+          echo ""
+          echo "✅ Deployment Complete!"
+          echo ""
+          echo "📊 PM2 Status:"
+          pm2 list
+          echo ""
+          echo "🌐 Access URLs:"
+          echo "   Frontend: http://$(hostname -I | awk '{print $1}'):5174"
+          echo "   Backend:  http://$(hostname -I | awk '{print $1}'):3000"
+          echo ""
+          echo "📋 Useful commands on server:"
+          echo "   pm2 logs qa-tool-backend"
+          echo "   pm2 logs qa-tool-frontend"
+          echo "   pm2 restart all"
+          echo "   pm2 stop all"
