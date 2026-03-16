@@ -16,7 +16,7 @@
     <!-- Stats Cards -->
     <div v-else-if="stats" class="space-y-8">
       <!-- Overview Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         <div class="bg-white rounded-lg shadow p-6">
           <div class="text-sm font-medium text-gray-500 mb-2">Total Tests</div>
           <div class="text-3xl font-bold text-gray-900">{{ stats.total }}</div>
@@ -51,6 +51,14 @@
           <div class="text-3xl font-bold text-blue-900">{{ stats.needConfirmation }}</div>
           <div class="text-xs text-blue-600 mt-1">
             {{ getPercentage(stats.needConfirmation, stats.total) }}%
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg shadow p-6">
+          <div class="text-sm font-medium text-gray-600 mb-2">📦 Backlog</div>
+          <div class="text-3xl font-bold text-gray-800">{{ stats.backlog }}</div>
+          <div class="text-xs text-gray-500 mt-1">
+            {{ getPercentage(stats.backlog, stats.total) }}%
           </div>
         </div>
       </div>
@@ -164,6 +172,8 @@ const getStatusEmoji = (status: string): string => {
       return '🟡';
     case 'NEED_CONFIRMATION':
       return '❓';
+    case 'BACKLOG':
+      return '📦';
     default:
       return '';
   }
@@ -180,6 +190,8 @@ const getStatusClass = (status: string): string => {
       return `${baseClass} bg-yellow-100 text-yellow-800`;
     case 'NEED_CONFIRMATION':
       return `${baseClass} bg-blue-100 text-blue-800`;
+    case 'BACKLOG':
+      return `${baseClass} bg-gray-100 text-gray-600`;
     default:
       return baseClass;
   }

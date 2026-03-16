@@ -52,7 +52,7 @@ export interface Detail {
   updatedAt: Date;
 }
 
-export type TestStatus = 'PASSED' | 'FAILED' | 'IN_PROGRESS' | 'NEED_CONFIRMATION';
+export type TestStatus = 'PASSED' | 'FAILED' | 'IN_PROGRESS' | 'NEED_CONFIRMATION' | 'BACKLOG';
 export type TestEnv = 'DEV' | 'STAGING' | 'PROD';
 export type TestCasePriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
@@ -138,6 +138,7 @@ export interface UpdateTestDto {
   env?: TestEnv;
   notes?: string;
   detailFile?: string;
+  testCaseId?: string | null;
 }
 
 export interface CreateDetailDto {
@@ -194,6 +195,7 @@ export interface Stats {
   failed: number;
   inProgress: number;
   needConfirmation: number;
+  backlog: number;
   byEnv: {
     dev: number;
     staging: number;

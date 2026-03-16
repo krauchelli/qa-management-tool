@@ -61,6 +61,15 @@ export class TestService {
           include: {
             tag: true
           }
+        },
+        testCase: {
+          include: {
+            tags: {
+              include: {
+                tag: true
+              }
+            }
+          }
         }
       },
       orderBy,
@@ -92,6 +101,15 @@ export class TestService {
         tags: {
           include: {
             tag: true
+          }
+        },
+        testCase: {
+          include: {
+            tags: {
+              include: {
+                tag: true
+              }
+            }
           }
         }
       },
@@ -126,6 +144,15 @@ export class TestService {
           include: {
             tag: true
           }
+        },
+        testCase: {
+          include: {
+            tags: {
+              include: {
+                tag: true
+              }
+            }
+          }
         }
       },
     });
@@ -149,6 +176,15 @@ export class TestService {
         tags: {
           include: {
             tag: true
+          }
+        },
+        testCase: {
+          include: {
+            tags: {
+              include: {
+                tag: true
+              }
+            }
           }
         }
       },

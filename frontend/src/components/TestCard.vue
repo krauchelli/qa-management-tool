@@ -51,6 +51,13 @@
       </a>
     </div>
 
+    <!-- Linked Test Case Badge -->
+    <div v-if="test.testCase" class="mb-2">
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 rounded text-xs">
+        📋 {{ test.testCase.title }}
+      </span>
+    </div>
+
     <!-- Evidence Count -->
     <div v-if="test.evidence && test.evidence.length > 0" class="card-footer">
       <span class="evidence-count">
@@ -69,6 +76,7 @@
         <option value="NEED_CONFIRMATION">Need Confirmation</option>
         <option value="FAILED">Failed</option>
         <option value="PASSED">Passed</option>
+        <option value="BACKLOG">📦 Backlog</option>
       </select>
     </div>
   </div>

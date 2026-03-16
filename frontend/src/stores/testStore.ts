@@ -23,10 +23,13 @@ export const useTestStore = defineStore('test', {
 
   getters: {
     activeTests: (state) =>
-      state.tests.filter((t) => t.status !== 'PASSED'),
+      state.tests.filter((t) => t.status !== 'PASSED' && t.status !== 'BACKLOG'),
     
     completedTests: (state) =>
       state.tests.filter((t) => t.status === 'PASSED'),
+    
+    backlogTests: (state) =>
+      state.tests.filter((t) => t.status === 'BACKLOG'),
     
     filteredTests: (state) => {
       let filtered = state.tests;

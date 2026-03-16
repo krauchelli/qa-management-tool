@@ -57,6 +57,7 @@
                 test.status === 'PASSED' ? 'bg-green-100 text-green-800' :
                 test.status === 'FAILED' ? 'bg-red-100 text-red-800' :
                 test.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' :
+                test.status === 'BACKLOG' ? 'bg-gray-100 text-gray-600' :
                 'bg-yellow-100 text-yellow-800'
               ]"
             >
@@ -190,6 +191,137 @@
           </div>
         </div>
         <p v-else class="text-gray-600 text-center py-4">No evidence added yet</p>
+      </div>
+
+      <!-- Linked Test Case Section -->
+      <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-900">Linked Test Case</h3>
+          <button
+            v-if="!test.testCase && !showTestCasePicker"
+            @click="openTestCasePicker"
+            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm"
+          >
+            🔗 Attach Test Case
+          </button>
+          <button
+            v-if="test.testCase"
+            @click="handleDetachTestCase"
+            class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 text-sm"
+          >
+            Detach
+          </button>
+        </div>
+
+        <!-- Test Case Picker -->
+        <div v-if="showTestCasePicker" class="mb-4 p-4 bg-gray-50 rounded-lg">
+          <div class="mb-3">
+            <input
+              v-model="testCaseSearch"
+              type="text"
+              placeholder="Search test cases..."
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+              @input="searchTestCases"
+            />
+          </div>
+          <div v-if="testCaseSearchLoading" class="text-center py-3 text-gray-500 text-sm">
+            Searching...
+          </div>
+          <div v-else-if="availableTestCases.length > 0" class="max-h-60 overflow-y-auto space-y-2">
+            <div
+              v-for="tc in availableTestCases"
+              :key="tc.id"
+              @click="handleAttachTestCase(tc.id)"
+              class="p-3 border border-gray-200 rounded-lg hover:border-purple-400 hover:bg-purple-50 cursor-pointer transition-colors"
+            >
+              <div class="flex items-center justify-between">
+                <span class="font-medium text-gray-900 text-sm">{{ tc.title }}</span>
+                <span
+                  :class="[
+                    'px-2 py-0.5 rounded text-xs font-medium',
+                    tc.priority === 'CRITICAL' ? 'bg-red-100 text-red-700' :
+                    tc.priority === 'HIGH' ? 'bg-orange-100 text-orange-700' :
+                    tc.priority === 'MEDIUM' ? 'bg-blue-100 text-blue-700' :
+                    'bg-gray-100 text-gray-600'
+                  ]"
+                >
+                  {{ tc.priority }}
+                </span>
+              </div>
+              <p v-if="tc.description" class="text-xs text-gray-500 mt-1 truncate">{{ tc.description }}</p>
+            </div>
+          </div>
+          <div v-else class="text-center py-3 text-gray-400 text-sm">
+            No test cases found
+          </div>
+          <div class="flex justify-end mt-3">
+            <button
+              @click="showTestCasePicker = false"
+              class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Linked Test Case Display -->
+        <div v-if="test.testCase" class="border border-purple-200 rounded-lg overflow-hidden">
+          <button
+            @click="testCaseExpanded = !testCaseExpanded"
+            class="w-full flex items-center justify-between px-4 py-3 bg-purple-50 hover:bg-purple-100 transition-colors"
+          >
+            <div class="flex items-center gap-3">
+              <span class="text-sm">{{ testCaseExpanded ? '▼' : '▶' }}</span>
+              <span class="font-medium text-purple-900">{{ test.testCase.title }}</span>
+              <span
+                :class="[
+                  'px-2 py-0.5 rounded text-xs font-medium',
+                  test.testCase.priority === 'CRITICAL' ? 'bg-red-100 text-red-700' :
+                  test.testCase.priority === 'HIGH' ? 'bg-orange-100 text-orange-700' :
+                  test.testCase.priority === 'MEDIUM' ? 'bg-blue-100 text-blue-700' :
+                  'bg-gray-100 text-gray-600'
+                ]"
+              >
+                {{ test.testCase.priority }}
+              </span>
+            </div>
+            <router-link
+              :to="`/test-cases/${test.testCase.id}`"
+              @click.stop
+              class="text-xs text-purple-600 hover:text-purple-800"
+            >
+              Open in Library ↗
+            </router-link>
+          </button>
+          <div v-if="testCaseExpanded" class="p-4 space-y-4">
+            <div v-if="test.testCase.description">
+              <p class="text-xs font-medium text-gray-500 uppercase mb-1">Description</p>
+              <p class="text-sm text-gray-700">{{ test.testCase.description }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-gray-500 uppercase mb-1">Steps</p>
+              <pre class="text-sm text-gray-700 whitespace-pre-wrap bg-gray-50 p-3 rounded">{{ test.testCase.steps }}</pre>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-gray-500 uppercase mb-1">Expected Results</p>
+              <pre class="text-sm text-gray-700 whitespace-pre-wrap bg-gray-50 p-3 rounded">{{ test.testCase.expected }}</pre>
+            </div>
+            <div v-if="test.testCase.tags && test.testCase.tags.length > 0">
+              <p class="text-xs font-medium text-gray-500 uppercase mb-1">Tags</p>
+              <div class="flex flex-wrap gap-1">
+                <TagBadge
+                  v-for="tcTag in test.testCase.tags"
+                  :key="tcTag.id"
+                  :tag="tcTag.tag"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p v-if="!test.testCase && !showTestCasePicker" class="text-gray-500 text-center py-4 text-sm">
+          No test case linked. Attach one to reference steps and expected results.
+        </p>
       </div>
 
       <!-- Test Details Section -->
@@ -326,8 +458,9 @@ import { useTestStore } from '@/stores/testStore';
 import TagBadge from '@/components/TagBadge.vue';
 import MarkdownEditor from '@/components/MarkdownEditor.vue';
 import MarkdownViewer from '@/components/MarkdownViewer.vue';
-import type { Test, Detail } from '@/types';
+import type { Test, Detail, TestCase } from '@/types';
 import { testService } from '@/services/testService';
+import { testCaseService } from '@/services/testCaseService';
 import { convertToDiscordFormat, copyToClipboard } from '@/utils/discordFormatter';
 
 interface Header {
@@ -359,6 +492,15 @@ const detailsForm = ref({
   title: '',
   content: ''
 });
+
+// Test case attachment state
+const showTestCasePicker = ref(false);
+const testCaseSearch = ref('');
+const testCaseSearchLoading = ref(false);
+const availableTestCases = ref<TestCase[]>([]);
+const testCaseExpanded = ref(false);
+
+let searchDebounce: ReturnType<typeof setTimeout> | null = null;
 
 // Computed: Extract headers from displayed content
 const displayHeaders = computed(() => {
@@ -513,6 +655,53 @@ const handleDelete = async () => {
 
 const formatStatus = (status: string) => {
   return status.replace('_', ' ');
+};
+
+// Test case attachment functions
+const openTestCasePicker = async () => {
+  showTestCasePicker.value = true;
+  testCaseSearch.value = '';
+  await searchTestCases();
+};
+
+const searchTestCases = async () => {
+  if (searchDebounce) clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(async () => {
+    testCaseSearchLoading.value = true;
+    try {
+      const response = await testCaseService.getAllTestCases({
+        search: testCaseSearch.value || undefined,
+        limit: 10,
+      });
+      availableTestCases.value = response.data;
+    } catch (err) {
+      availableTestCases.value = [];
+    } finally {
+      testCaseSearchLoading.value = false;
+    }
+  }, 250);
+};
+
+const handleAttachTestCase = async (testCaseId: string) => {
+  try {
+    await testStore.updateTest(testId, { testCaseId });
+    test.value = testStore.currentTest;
+    showTestCasePicker.value = false;
+    testCaseExpanded.value = true;
+  } catch (err: any) {
+    alert('Failed to attach test case: ' + err.message);
+  }
+};
+
+const handleDetachTestCase = async () => {
+  if (!confirm('Detach this test case?')) return;
+  try {
+    await testStore.updateTest(testId, { testCaseId: null });
+    test.value = testStore.currentTest;
+    testCaseExpanded.value = false;
+  } catch (err: any) {
+    alert('Failed to detach test case: ' + err.message);
+  }
 };
 
 // Extract headers from markdown

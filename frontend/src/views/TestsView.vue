@@ -56,6 +56,7 @@
             <option value="FAILED">🔴 Failed</option>
             <option value="IN_PROGRESS">🟡 In Progress</option>
             <option value="NEED_CONFIRMATION">❓ Need Confirmation</option>
+            <option value="BACKLOG">📦 Backlog</option>
           </select>
         </div>
         <div>
@@ -344,6 +345,8 @@ const getStatusText = (status: string): string => {
       return '🟡 In Progress';
     case 'NEED_CONFIRMATION':
       return '❓ Need Confirmation';
+    case 'BACKLOG':
+      return '📦 Backlog';
     default:
       return status;
   }
@@ -360,6 +363,8 @@ const getStatusClass = (status: string): string => {
       return `${baseClass} bg-yellow-100 text-yellow-800`;
     case 'NEED_CONFIRMATION':
       return `${baseClass} bg-blue-100 text-blue-800`;
+    case 'BACKLOG':
+      return `${baseClass} bg-gray-100 text-gray-600`;
     default:
       return baseClass;
   }

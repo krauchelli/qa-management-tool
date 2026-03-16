@@ -118,6 +118,46 @@
         </div>
       </div>
     </div>
+
+    <!-- Backlog Section (collapsible, hidden by default) -->
+    <div class="mt-4" v-if="getTestsByStatus('BACKLOG').length > 0 || showBacklog">
+      <button
+        @click="showBacklog = !showBacklog"
+        class="w-full flex items-center justify-between px-4 py-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+        :class="{ 'rounded-b-none': showBacklog }"
+      >
+        <div class="flex items-center gap-2">
+          <span class="text-sm">{{ showBacklog ? '▼' : '▶' }}</span>
+          <h3 class="font-semibold text-gray-600">📦 Backlog</h3>
+          <span class="text-sm text-gray-500">({{ getTestsByStatus('BACKLOG').length }})</span>
+        </div>
+        <span class="text-xs text-gray-400">Hidden from main board</span>
+      </button>
+      <div
+        v-if="showBacklog"
+        class="bg-gray-50 border border-t-0 border-gray-200 rounded-b-lg p-4"
+        @drop="handleDrop($event, 'BACKLOG')"
+        @dragover.prevent
+        @dragenter="handleDragEnter('BACKLOG')"
+        @dragleave="handleDragLeave"
+        :class="{ 'ring-2 ring-gray-400 ring-dashed': dragOverColumn === 'BACKLOG' }"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          <TestCard
+            v-for="test in getTestsByStatus('BACKLOG')"
+            :key="test.id"
+            :test="test"
+            :draggable="true"
+            @click="$emit('view-test', test.id)"
+            @status-change="handleStatusChange"
+            @dragstart="handleDragStart($event, test)"
+          />
+        </div>
+        <div v-if="getTestsByStatus('BACKLOG').length === 0" class="text-center py-4 text-gray-400 text-sm">
+          Drag passed tests here to archive them from the board
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -137,6 +177,7 @@ const emit = defineEmits<{
 
 const draggedTest = ref<Test | null>(null);
 const dragOverColumn = ref<TestStatus | null>(null);
+const showBacklog = ref(false);
 
 const getTestsByStatus = (status: TestStatus) => {
   return props.tests.filter(test => test.status === status);

@@ -101,6 +101,7 @@
             <option value="FAILED">Failed</option>
             <option value="IN_PROGRESS">In Progress</option>
             <option value="NEED_CONFIRMATION">Need Confirmation</option>
+            <option value="BACKLOG">📦 Backlog</option>
           </select>
         </div>
 

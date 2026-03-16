@@ -20,6 +20,7 @@ export class StatsService {
     const failed = allTests.filter((t) => t.status === 'FAILED').length;
     const inProgress = allTests.filter((t) => t.status === 'IN_PROGRESS').length;
     const needConfirmation = allTests.filter((t) => t.status === 'NEED_CONFIRMATION').length;
+    const backlog = allTests.filter((t) => t.status === 'BACKLOG').length;
 
     // Calculate counts by environment
     const byEnv = {
@@ -46,6 +47,7 @@ export class StatsService {
       failed,
       inProgress,
       needConfirmation,
+      backlog,
       byEnv,
       recentTests: recentTests as any,
     };
