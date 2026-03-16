@@ -123,6 +123,57 @@
           <TagSelector v-model="form.tagIds" />
         </div>
 
+        <!-- Evidence Section -->
+        <div class="border-t pt-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Evidence (Optional)</h3>
+            <button
+              type="button"
+              @click="addEvidenceRow"
+              class="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+            >
+              + Add Evidence
+            </button>
+          </div>
+          <div v-if="form.evidence.length > 0" class="space-y-3">
+            <div
+              v-for="(ev, index) in form.evidence"
+              :key="index"
+              class="flex gap-3 items-start p-3 bg-gray-50 rounded-lg"
+            >
+              <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                <input
+                  v-model="ev.type"
+                  type="text"
+                  placeholder="Type (e.g., screenshot, jam.dev)"
+                  class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
+                />
+                <input
+                  v-model="ev.url"
+                  type="text"
+                  placeholder="URL or file path"
+                  class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
+                />
+                <input
+                  v-model="ev.description"
+                  type="text"
+                  placeholder="Description (optional)"
+                  class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
+                />
+              </div>
+              <button
+                type="button"
+                @click="removeEvidenceRow(index)"
+                class="px-2 py-2 text-red-500 hover:text-red-700 text-sm"
+                title="Remove"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+          <p v-else class="text-sm text-gray-400">No evidence added yet. Click "+ Add Evidence" to attach screenshots, recordings, etc.</p>
+        </div>
+
         <!-- Test Details Section -->
         <div class="border-t pt-6">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">Test Details (Optional)</h3>
@@ -290,6 +341,8 @@ const form = ref({
   status: '' as TestStatus | '',
   notes: '',
   tagIds: [] as string[],
+  // Evidence
+  evidence: [] as Array<{ type: string; url: string; description: string }>,
   // Details
   detailsMode: 'none' as 'none' | 'formatted' | 'free',
   detailsTitle: '',
@@ -319,6 +372,11 @@ onMounted(async () => {
           status: test.status,
           notes: test.notes || '',
           tagIds: test.tags?.map(tt => tt.tag.id) || [],
+          evidence: test.evidence?.map(e => ({
+            type: e.type,
+            url: e.url,
+            description: e.description || '',
+          })) || [],
           detailsMode: 'none',
           detailsTitle: '',
           detailsContent: '',
@@ -339,6 +397,14 @@ onMounted(async () => {
     form.value.date = new Date().toISOString().split('T')[0];
   }
 });
+
+const addEvidenceRow = () => {
+  form.value.evidence.push({ type: '', url: '', description: '' });
+};
+
+const removeEvidenceRow = (index: number) => {
+  form.value.evidence.splice(index, 1);
+};
 
 const handleSubmit = async () => {
   loading.value = true;
@@ -377,6 +443,15 @@ ${form.value.rootCause ? `## Root Cause\n${form.value.rootCause}` : ''}`;
       detailsTitle = firstHeader ? firstHeader[1] : 'Test Details';
     }
     
+    // Filter out empty evidence rows
+    const validEvidence = form.value.evidence
+      .filter(e => e.type && e.url)
+      .map(e => ({
+        type: e.type,
+        url: e.url,
+        description: e.description || undefined,
+      }));
+
     if (isEdit.value && testId.value) {
       await testStore.updateTest(testId.value, {
         date: form.value.date,
@@ -388,6 +463,29 @@ ${form.value.rootCause ? `## Root Cause\n${form.value.rootCause}` : ''}`;
         notes: form.value.notes || undefined
       });
       savedTestId = testId.value;
+
+      // Sync evidence for edit mode
+      // Delete existing evidence that was removed
+      const currentTest = testStore.currentTest;
+      if (currentTest?.evidence) {
+        for (const existing of currentTest.evidence) {
+          const stillExists = form.value.evidence.some(
+            e => e.type === existing.type && e.url === existing.url
+          );
+          if (!stillExists) {
+            await testService.deleteEvidence(savedTestId, existing.id);
+          }
+        }
+      }
+      // Add new evidence
+      for (const ev of validEvidence) {
+        const alreadyExists = currentTest?.evidence?.some(
+          e => e.type === ev.type && e.url === ev.url
+        );
+        if (!alreadyExists) {
+          await testService.addEvidence(savedTestId, ev);
+        }
+      }
       
       // Update details if provided
       if (form.value.detailsMode !== 'none' && detailsContent) {
@@ -413,7 +511,8 @@ ${form.value.rootCause ? `## Root Cause\n${form.value.rootCause}` : ''}`;
         jiraUrl: form.value.jiraUrl || undefined,
         env: form.value.env as TestEnv,
         status: form.value.status as TestStatus,
-        notes: form.value.notes || undefined
+        notes: form.value.notes || undefined,
+        evidence: validEvidence.length > 0 ? validEvidence : undefined,
       });
       savedTestId = newTest.id;
       
