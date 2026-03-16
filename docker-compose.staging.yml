@@ -8,7 +8,7 @@ services:
     container_name: qa-tool-backend-staging
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3000" # using 3001, but 3000 is the one that is from the docker machine
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -28,12 +28,13 @@ services:
     container_name: qa-tool-frontend-staging
     restart: unless-stopped
     ports:
-      - "5173:5173"
+      - "5174:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:3000
+      - VITE_API_URL=http://localhost:3001
+      - BACKEND_URL=http://backend:3000
     depends_on:
       - backend
     networks:
