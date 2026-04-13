@@ -6,6 +6,7 @@ import detailsRoutes from './routes/details.routes';
 import statsRoutes from './routes/stats.routes';
 import tagsRoutes from './routes/tags.routes';
 import testCaseRoutes from './routes/testCase.routes';
+import dataTransferRoutes from './routes/dataTransfer.routes';
 
 // Load environment variables
 dotenv.config();
@@ -15,10 +16,10 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5264', 'http://localhost:5173'],
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoints
@@ -40,6 +41,7 @@ app.get('/api', (req, res) => {
       details: '/api/details',
       stats: '/api/stats',
       tags: '/api/tags',
+      data: '/api/data',
     },
   });
 });
@@ -49,6 +51,7 @@ app.use('/api/test-cases', testCaseRoutes);
 app.use('/api/details', detailsRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/tags', tagsRoutes);
+app.use('/api/data', dataTransferRoutes);
 
 // 404 handler
 app.use((req, res) => {
