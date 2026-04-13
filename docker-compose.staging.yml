@@ -28,7 +28,7 @@ services:
     container_name: qa-tool-frontend-staging
     restart: unless-stopped
     ports:
-      - "5174:5173"
+      - "5264:5264"
     volumes:
       - ./frontend:/app
       - /app/node_modules
