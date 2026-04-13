@@ -1,7 +1,7 @@
 # QA Management Tool V2 - Current Status
 
-**Last Updated:** 2026-02-02  
-**Version:** 2.0.0  
+**Last Updated:** 2026-04-14  
+**Version:** 2.1.0  
 **Status:** ✅ PRODUCTION READY
 
 ---
@@ -205,6 +205,35 @@ qa-management-tool/
 
 ### None Currently 🎉
 All known issues have been resolved!
+
+---
+
+## 🆕 Latest Updates (2026-04-14)
+
+### Phase 10: BACKLOG Status & Test Case Integration ✅ COMPLETE
+- Added `BACKLOG` status — hidden collapsible section in Kanban, visible in table filter
+- Test cases can be attached/detached to any test from the detail view
+- Linked test case displays as collapsible inline card (title, priority, steps, expected, tags)
+- TestCard shows purple badge for linked test case
+- Dashboard shows BACKLOG count as 6th stat card
+
+### Phase 11: Evidence in Create/Edit Form ✅ COMPLETE
+- Evidence can now be added during test creation and editing (not just detail view)
+- Multi-row evidence input with type, URL, description
+- Existing evidence loads when editing
+- Evidence syncs on save (adds new, removes deleted)
+
+### Phase 12: Data Export/Import ✅ COMPLETE
+- **Export JSON**: Full database dump, portable for re-import on any device
+- **Export ZIP**: JSON + readable markdown summary + individual test detail files
+- **Import (Merge)**: Adds new records, updates existing by ID
+- **Import (Replace)**: Wipes all data, then imports (full restore)
+- **Web UI**: `/data` route with preview, drag-and-drop file upload
+- **REST API**: `GET /api/data/export/json`, `GET /api/data/export/zip`, `POST /api/data/import`
+
+### Bug Fixes
+- Fixed `tagService.ts` using hardcoded `localhost:3000` instead of shared API instance (tags not loading in forms)
+- Frontend port changed to `5264` to avoid conflicts
 
 ---
 

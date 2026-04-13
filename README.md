@@ -40,7 +40,7 @@ This will:
 
 ### Access the App
 
-- **Frontend:** http://localhost:5173
+- **Frontend:** http://localhost:5264
 - **Backend API:** http://localhost:3000/api
 - **Health Check:** http://localhost:3000/health
 
@@ -98,6 +98,27 @@ qa-management-tool/
 - ✅ Import from existing Obsidian vault
 - ✅ Multiple export options
 - ✅ Conflict resolution
+
+### Data Management (Export/Import)
+- ✅ Export all data as JSON (portable, for re-import)
+- ✅ Export as ZIP (JSON + readable markdown summary + detail files)
+- ✅ Import from JSON with merge mode (add new, update existing)
+- ✅ Import from JSON with replace mode (wipe and restore)
+- ✅ Data preview before import
+- ✅ Web UI at `/data` route
+- ✅ REST API endpoints for CLI/automation
+
+### Test Case Library
+- ✅ Reusable test case repository
+- ✅ Link test cases to test executions
+- ✅ Attach/detach test cases from test detail view
+- ✅ Test case info displayed inline (collapsible card)
+- ✅ Test case badge on Kanban cards
+
+### Kanban Board
+- ✅ Drag-and-drop between status columns
+- ✅ BACKLOG status (hidden collapsible section, traceable but not cluttering the board)
+- ✅ Status dropdown on each card
 
 ---
 
@@ -184,6 +205,12 @@ This opens Prisma Studio at `http://localhost:5555` where you can view and edit 
 - `POST /api/export` - Export to markdown ZIP
 - `POST /api/import` - Import from markdown ZIP
 
+### Data Management
+- `GET /api/data/export/json` - Export all data as JSON
+- `GET /api/data/export/zip` - Export as ZIP (JSON + markdown files)
+- `POST /api/data/import?mode=merge|replace` - Import from JSON
+- `GET /api/data/preview` - Get current data counts
+
 ---
 
 ## Documentation
@@ -216,12 +243,12 @@ This opens Prisma Studio at `http://localhost:5555` where you can view and edit 
 
 ### Port Already in Use
 
-If port 3000 or 5173 is in use:
+If port 3000 or 5264 is in use:
 
 ```bash
 # Linux/Mac
 lsof -ti:3000 | xargs kill -9
-lsof -ti:5173 | xargs kill -9
+lsof -ti:5264 | xargs kill -9
 
 # Windows
 netstat -ano | findstr :3000
@@ -272,4 +299,4 @@ See [CURRENT-STATUS.md](./CURRENT-STATUS.md) for full details.
 
 ---
 
-*Last updated: 2026-02-02*
+*Last updated: 2026-04-14*
