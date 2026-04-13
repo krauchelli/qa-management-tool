@@ -37,6 +37,13 @@
               >
                 Tags
               </router-link>
+              <router-link
+                to="/data"
+                class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
+                active-class="bg-gray-100"
+              >
+                Data
+              </router-link>
             </nav>
           </div>
           <div class="flex items-center gap-4">

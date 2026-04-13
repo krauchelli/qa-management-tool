@@ -53,6 +53,11 @@ const router = createRouter({
       name: 'EditTestCase',
       component: () => import('../views/TestCaseFormView.vue'),
     },
+    {
+      path: '/data',
+      name: 'DataManagement',
+      component: () => import('../views/DataManagementView.vue'),
+    },
   ],
 });
 
