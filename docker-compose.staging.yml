@@ -13,11 +13,12 @@ services:
       - ./backend:/app
       - /app/node_modules
       - ./backend/prisma:/app/prisma
+    env_file:
+      - ./backend/.env
     environment:
       - NODE_ENV=development
       - PORT=3000
-      - DATABASE_URL=file:./dev.db
-    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run dev"
+    command: sh -c "npx prisma generate && npm run dev"
     networks:
       - qa-network
 
