@@ -1,8 +1,34 @@
 # QA Management Tool V2 - Current Status
 
-**Last Updated:** 2026-04-14  
-**Version:** 2.1.0  
+**Last Updated:** 2026-06-08  
+**Version:** 2.2.0  
 **Status:** ✅ PRODUCTION READY
+
+---
+
+## Changelog
+
+### v2.2.0 — 2026-06-08: Turso Migration
+
+**Why:** Local SQLite (`dev.db`) doesn't sync across machines. Migrated to Turso (cloud-hosted libSQL) so the database is always available regardless of which machine or OS is being used.
+
+**What changed:**
+
+| File | Change |
+|------|--------|
+| `backend/prisma/schema.prisma` | Added `previewFeatures = ["driverAdapters"]`; datasource url now reads from `DATABASE_URL` env (local fallback only) |
+| `backend/src/utils/prisma.ts` | Swapped `new PrismaClient()` for `@prisma/adapter-libsql` + `@libsql/client` adapter pattern pointing at `TURSO_DATABASE_URL` |
+| `backend/package.json` | Added `@libsql/client` and `@prisma/adapter-libsql` deps; added `turso:setup` and `turso:migrate` scripts; `prisma:migrate` kept for local SQLite schema work |
+| `backend/.env` | Added `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` |
+| `backend/.env.example` | Updated to document both Turso and local SQLite vars |
+| `docker-compose.staging.yml` | Replaced hardcoded `DATABASE_URL=file:./dev.db` with `env_file: ./backend/.env`; removed `prisma migrate deploy` from startup command (not supported on Turso); kept `prisma generate` on startup |
+| `Dockerfile.dev` | Switched base image from `node:20-alpine` to `node:20-slim` — `@libsql/client` native binaries are incompatible with Alpine's musl libc (`fcntl64` symbol missing) |
+| `backend/scripts/setup-turso.ts` | New script: applies all Prisma migration SQL files to a fresh Turso DB |
+| `backend/scripts/migrate-sqlite-to-turso.ts` | New script: one-time migration of all rows from local `dev.db` → Turso |
+
+**Data migrated:** 276 tests, 33 tags, 33 test cases, 134 evidence, 25 details, 8 test-tags, 98 test-case-tags.
+
+**Local `dev.db` preserved** at `backend/prisma/dev.db` as an offline backup.
 
 ---
 

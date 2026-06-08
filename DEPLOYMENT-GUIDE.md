@@ -1,274 +1,125 @@
 # Deployment Guide
 
-## What's Already in Git
+**Last Updated:** 2026-06-08
 
-Your `.gitignore` is properly configured. The following are **already tracked** in git:
+---
 
-### ✅ Tracked (In Git)
+## What's in Git
+
+### Tracked
 - All source code (`frontend/src/`, `backend/src/`)
-- Configuration files (`package.json`, `tsconfig.json`, etc.)
-- Prisma schema (`backend/prisma/schema.prisma`)
-- Documentation (`.md` files in root and `.kiro/`)
-- `.gitignore` itself
+- Prisma schema and migrations (`backend/prisma/schema.prisma`, `backend/prisma/migrations/`)
+- Docker config (`Dockerfile.dev`, `Dockerfile.frontend.dev`, `docker-compose.staging.yml`)
+- Package files (`package.json`, `package-lock.json`)
+- Documentation
 
-### ❌ Not Tracked (Ignored)
-- `node_modules/` (will be installed via `npm install`)
-- `dist/` (will be built via `npm run build`)
-- `backend/prisma/dev.db` (database file - needs manual handling)
-- `.env` files (if you create them)
-- `v1-backup/` folder
+### Not Tracked (Ignored)
+- `node_modules/` — installed inside the Docker image at build time
+- `backend/prisma/dev.db` — local SQLite kept as an offline backup only
+- `.env` files — must be provided manually on each machine
 
 ---
 
-## 🚨 Critical: What You MUST Copy Manually
+## Environment Variables
 
-### 1. Database File (IMPORTANT!)
-**File:** `backend/prisma/dev.db`
+Create `backend/.env` with the following:
 
-This contains all your test data (21 tests, evidence, details). You have 2 options:
+```env
+# Turso — primary database (synced across devices)
+TURSO_DATABASE_URL="libsql://<your-db-name>.turso.io"
+TURSO_AUTH_TOKEN="your-turso-auth-token"
 
-#### Option A: Copy Database File (Recommended for keeping data)
-```bash
-# On your local machine
-scp qa-management-tool/backend/prisma/dev.db user@server:/path/to/qa-management-tool/backend/prisma/
+# Local SQLite fallback (only used by prisma:migrate for local schema work)
+DATABASE_URL="file:./dev.db"
 
-# Or copy to another machine
-cp qa-management-tool/backend/prisma/dev.db /backup/location/
-```
-
-#### Option B: Start Fresh (Re-import data)
-```bash
-# After cloning on new machine
-cd qa-management-tool/backend
-npm install
-npx prisma migrate dev  # Creates new empty database
-npm run import          # Re-import from markdown files
-```
-
-### 2. Environment Variables (If You Have Any)
-**Files:** `.env`, `backend/.env`, `frontend/.env`
-
-If you created any `.env` files, copy them manually:
-```bash
-# Example .env content for backend
-DATABASE_URL="file:./prisma/dev.db"
 PORT=3000
-NODE_ENV=production
+NODE_ENV=development
 ```
+
+The app connects to Turso at runtime. `DATABASE_URL` is only referenced by the Prisma CLI for local migration commands.
 
 ---
 
-## 📋 Setup on New Machine
+## Docker Setup (Staging)
 
-### Step 1: Clone Repository
+### First-time or after Dockerfile changes:
 ```bash
-git clone <your-private-repo-url>
-cd qa-management-tool
+docker compose -f docker-compose.staging.yml up --build
 ```
 
-### Step 2: Install Dependencies
+### Normal start:
 ```bash
-# Install root dependencies
-npm install
-
-# Install backend dependencies
-cd backend
-npm install
-cd ..
-
-# Install frontend dependencies
-cd frontend
-npm install
-cd ..
+docker compose -f docker-compose.staging.yml up
 ```
 
-### Step 3: Setup Database
-
-#### If you copied `dev.db`:
+### Full teardown and rebuild:
 ```bash
-# Just generate Prisma client
-cd backend
-npx prisma generate
+docker compose -f docker-compose.staging.yml down --volumes --rmi local
+docker compose -f docker-compose.staging.yml up --build
 ```
 
-#### If starting fresh:
-```bash
-cd backend
-npx prisma migrate dev    # Creates database
-npm run import            # Import data from markdown
-npm run verify            # Verify import
-```
+> The `--volumes` flag removes the anonymous `node_modules` volume so it gets re-populated from the fresh image.
 
-### Step 4: Run Application
-```bash
-# From root directory
-npm run dev
-```
-
-Or run separately:
-```bash
-# Terminal 1: Backend
-cd backend
-npm run dev
-
-# Terminal 2: Frontend
-cd frontend
-npm run dev
-```
+### Ports
+| Service  | Host Port | Container Port |
+|----------|-----------|----------------|
+| Backend  | 3001      | 3000           |
+| Frontend | 5264      | 5264           |
 
 ---
 
-## 📦 Files/Folders Checklist
+## Database
 
-### Essential Files (Should be in Git)
-- ✅ `package.json` (root, backend, frontend)
-- ✅ `backend/prisma/schema.prisma`
-- ✅ `backend/src/**/*` (all source code)
-- ✅ `frontend/src/**/*` (all source code)
-- ✅ `README.md`, `QUICK-START.md`, `CURRENT-STATUS.md`
-- ✅ `.gitignore`
-- ✅ `backend/tsconfig.json`, `frontend/tsconfig.json`
-- ✅ `frontend/vite.config.ts`, `frontend/tailwind.config.js`
-- ✅ `backend/nodemon.json`
-- ✅ `.kiro/` folder (specs and docs)
+The database is **Turso** (cloud libSQL). Data is always available as long as credentials are in `.env`.
 
-### Files to Copy Manually
-- 🔴 `backend/prisma/dev.db` (your database!)
-- 🟡 `.env` files (if you have any)
-- 🟡 `backend/prisma/migrations/` (if you want migration history)
+### Scripts (run from `backend/`)
 
-### Files NOT Needed (Will be Generated)
-- ❌ `node_modules/` (run `npm install`)
-- ❌ `dist/` (run `npm run build`)
-- ❌ `backend/prisma/dev.db-journal` (temporary file)
-- ❌ `.DS_Store`, `.vscode/`, etc. (editor files)
+| Command | Purpose |
+|---------|---------|
+| `npm run turso:setup` | Apply schema to a fresh Turso DB |
+| `npm run turso:migrate` | One-time migration of local `dev.db` → Turso |
+| `npm run prisma:migrate` | Local SQLite schema migration (dev only) |
+| `npm run prisma:generate` | Regenerate Prisma client after schema changes |
+
+### Adding schema changes
+1. Update `backend/prisma/schema.prisma`
+2. Run `npm run prisma:migrate` locally (creates a migration file)
+3. Run `npm run turso:setup` to apply the new migration to Turso
+4. Rebuild Docker image: `docker compose -f docker-compose.staging.yml up --build`
 
 ---
 
-## 🔍 Verify Your Git Repository
+## Node / Docker Notes
 
-Check what's tracked:
-```bash
-cd qa-management-tool
-git status
-git ls-files | head -20  # See first 20 tracked files
-```
-
-Check what's ignored:
-```bash
-git status --ignored
-```
+- Backend image uses `node:20-slim` (Debian/glibc) — required for `@libsql/client` native binaries
+- `node_modules` is installed inside the image, not mounted from host
+- Frontend image uses `node:20-alpine` (no native binaries, fine with musl)
 
 ---
 
-## 🚀 Production Deployment
+## Troubleshooting
 
-### Build for Production
+### Container shows 500 / TypeScript errors
 ```bash
-# Build backend
-cd backend
-npm run build
+docker logs qa-tool-backend-staging
+```
+Check for missing env vars or module resolution issues. If packages are out of sync, do a full rebuild.
 
-# Build frontend
-cd frontend
-npm run build
+### "Cannot find module" errors in container
+The image's `node_modules` is stale. Rebuild:
+```bash
+docker compose -f docker-compose.staging.yml down --volumes --rmi local
+docker compose -f docker-compose.staging.yml up --build
 ```
 
-### Run Production
+### Turso connection refused
+Verify `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` in `backend/.env`.  
+Test connectivity:
 ```bash
-# Backend
-cd backend
-npm start
-
-# Frontend (serve dist folder with nginx/apache)
-# Or use: npm run preview
+cd backend && node -e "
+const { createClient } = require('@libsql/client');
+require('dotenv').config();
+const c = createClient({ url: process.env.TURSO_DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN });
+c.execute('SELECT 1').then(() => console.log('OK')).catch(console.error);
+"
 ```
-
----
-
-## 📝 Quick Reference
-
-### Clone and Run (With Database)
-```bash
-git clone <repo>
-cd qa-management-tool
-npm install
-# Copy dev.db to backend/prisma/
-cd backend && npx prisma generate && cd ..
-npm run dev
-```
-
-### Clone and Run (Fresh Start)
-```bash
-git clone <repo>
-cd qa-management-tool
-npm install
-cd backend
-npx prisma migrate dev
-npm run import
-cd ..
-npm run dev
-```
-
----
-
-## ⚠️ Important Notes
-
-1. **Database is NOT in Git** - You must copy `dev.db` manually or re-import data
-2. **node_modules is NOT in Git** - Run `npm install` on new machine
-3. **Environment variables** - Copy `.env` files if you have any
-4. **Port conflicts** - Make sure ports 3000 and 5173 are available
-5. **Node version** - Requires Node.js 18+
-
----
-
-## 🆘 Troubleshooting
-
-### "Cannot find module '@prisma/client'"
-```bash
-cd backend
-npm install
-npx prisma generate
-```
-
-### "Database not found"
-```bash
-# Option 1: Copy dev.db from backup
-cp /backup/dev.db backend/prisma/
-
-# Option 2: Create new and import
-cd backend
-npx prisma migrate dev
-npm run import
-```
-
-### "Port already in use"
-```bash
-# Kill processes on ports
-lsof -ti:3000 | xargs kill -9
-lsof -ti:5173 | xargs kill -9
-```
-
----
-
-## 📊 What's in Your Database
-
-Current data (as of last import):
-- 21 tests
-- 11 evidence recordings
-- 21 detailed documentation
-- Date range: July 2025 - February 2026
-
-To backup your database:
-```bash
-# Create backup
-cp backend/prisma/dev.db backend/prisma/dev.db.backup
-
-# Or export to SQL
-cd backend
-npx prisma db push --force-reset  # Be careful!
-```
-
----
-
-**Last Updated:** 2026-02-02
