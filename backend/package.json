@@ -11,6 +11,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:push": "prisma db push",
+    "turso:setup": "ts-node scripts/setup-turso.ts",
+    "turso:migrate": "ts-node scripts/migrate-sqlite-to-turso.ts",
     "import": "ts-node scripts/import-from-markdown.ts",
     "verify": "ts-node scripts/verify-import.ts",
     "seed:tags": "ts-node scripts/seed-tags.ts",
@@ -18,20 +20,22 @@
     "restore": "ts-node scripts/restore-from-backup.ts"
   },
   "dependencies": {
+    "@libsql/client": "^0.8.1",
+    "@prisma/adapter-libsql": "^5.22.0",
     "@prisma/client": "^5.22.0",
+    "archiver": "^7.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "multer": "^1.4.5-lts.1",
-    "archiver": "^7.0.1",
-    "extract-zip": "^2.0.1"
+    "extract-zip": "^2.0.1",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
+    "@types/archiver": "^6.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.10.5",
-    "@types/archiver": "^6.0.2",
     "nodemon": "^3.1.9",
     "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
